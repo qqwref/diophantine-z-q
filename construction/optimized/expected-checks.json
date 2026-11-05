@@ -1,0 +1,683 @@
+{
+  "build": {
+    "passed": true,
+    "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
+    "optimizedPolynomialSha256": "c5548922bd76fcedd096526447dc8a1bde8cdaa8ccc55772f7114c9f62b6ab7a",
+    "bytes": 22951983,
+    "baselineTotalVariables": 292890231905,
+    "totalVariables": 211983774909,
+    "variablesRemoved": 80906456996,
+    "templates": {
+      "member": {
+        "witnesses": 7,
+        "nodes": 150
+      },
+      "raw_add": {
+        "witnesses": 6,
+        "nodes": 309
+      },
+      "raw_z": {
+        "witnesses": 1,
+        "nodes": 69
+      },
+      "raw_inverse_x": {
+        "witnesses": 0,
+        "nodes": 55
+      },
+      "log25": {
+        "witnesses": 0,
+        "nodes": 230
+      },
+      "pole": {
+        "witnesses": 11,
+        "nodes": 107
+      },
+      "test_group": {
+        "witnesses": 162,
+        "nodes": 516
+      },
+      "slope": {
+        "witnesses": 1298,
+        "nodes": 2682
+      },
+      "height_certificate": {
+        "witnesses": 35106,
+        "nodes": 261
+      },
+      "multiply.scalar": {
+        "witnesses": 1,
+        "nodes": 137
+      },
+      "multiply.guard": {
+        "witnesses": 1,
+        "nodes": 18
+      },
+      "multiply": {
+        "witnesses": 35134,
+        "nodes": 84
+      },
+      "natural": {
+        "witnesses": 105504,
+        "nodes": 127
+      },
+      "raw_negate": {
+        "witnesses": 0,
+        "nodes": 37
+      },
+      "value.signed_encode": {
+        "witnesses": 105554,
+        "nodes": 139
+      },
+      "value.abs": {
+        "witnesses": 4,
+        "nodes": 24
+      },
+      "value.close_coordinates": {
+        "witnesses": 53,
+        "nodes": 272
+      },
+      "value.test": {
+        "witnesses": 35282,
+        "nodes": 776
+      },
+      "value.exceptions": {
+        "witnesses": 406,
+        "nodes": 488
+      },
+      "scalar.integer_constant_0": {
+        "witnesses": 1,
+        "nodes": 137
+      },
+      "scalar.integer_constant_1": {
+        "witnesses": 1,
+        "nodes": 137
+      },
+      "scalar.integer_constant_2": {
+        "witnesses": 1,
+        "nodes": 137
+      },
+      "scalar.integer_constant_3": {
+        "witnesses": 1,
+        "nodes": 137
+      },
+      "scalar.integer_constant_4": {
+        "witnesses": 1,
+        "nodes": 137
+      }
+    },
+    "recipes": {
+      "power_value": {
+        "witnesses": 12870618,
+        "operations": {
+          "add": 200,
+          "multiply": 129,
+          "negate": 51
+        }
+      },
+      "precision": {
+        "witnesses": 211983211340,
+        "operations": {
+          "add": 129014,
+          "power": 15845,
+          "multiply": 66685,
+          "negate": 26406
+        }
+      },
+      "close": {
+        "witnesses": 211983739203,
+        "operations": {}
+      },
+      "main": {
+        "witnesses": 211983774490,
+        "operations": {}
+      },
+      "value_union": {
+        "witnesses": 211983774896,
+        "operations": {}
+      },
+      "value": {
+        "witnesses": 211983774903,
+        "operations": {}
+      },
+      "integers": {
+        "witnesses": 211983774908,
+        "operations": {}
+      }
+    },
+    "checks": {
+      "valid": true,
+      "evaluations": [
+        {
+          "name": "power_value",
+          "witnesses": 12870618,
+          "sourceNodesChecked": 474,
+          "operationsChecked": 380,
+          "aliasesChecked": 6,
+          "completeVariableCoverage": true
+        },
+        {
+          "name": "precision",
+          "witnesses": 211983211340,
+          "sourceNodesChecked": 293620,
+          "operationsChecked": 237950,
+          "aliasesChecked": 1604,
+          "completeVariableCoverage": true
+        }
+      ],
+      "compositions": [
+        {
+          "name": "close",
+          "callsChecked": 7,
+          "witnesses": 211983739203,
+          "completeVariableCoverage": true
+        },
+        {
+          "name": "main",
+          "callsChecked": 2,
+          "witnesses": 211983774490,
+          "completeVariableCoverage": true
+        },
+        {
+          "name": "value_union",
+          "callsChecked": 2,
+          "witnesses": 211983774896,
+          "completeVariableCoverage": true
+        },
+        {
+          "name": "value",
+          "callsChecked": 2,
+          "witnesses": 211983774903,
+          "completeVariableCoverage": true
+        },
+        {
+          "name": "integers",
+          "callsChecked": 1,
+          "witnesses": 211983774908,
+          "completeVariableCoverage": true
+        }
+      ],
+      "totalVariables": 211983774909,
+      "interpolationConstructors": 1,
+      "scope": "Source wiring, optimized operation selection, finite-constructor syntax and witness scopes; arithmetic equivalence is proved in README.md."
+    },
+    "arithmeticTheoremProved": false
+  },
+  "bounds": {
+    "candidate_sha256": "c5548922bd76fcedd096526447dc8a1bde8cdaa8ccc55772f7114c9f62b6ab7a",
+    "total_variables": 211983774909,
+    "rational_witnesses": 211983774908,
+    "templates": [
+      {
+        "name": "member",
+        "height": 18,
+        "nodes": 150
+      },
+      {
+        "name": "raw_add",
+        "height": 21,
+        "nodes": 309
+      },
+      {
+        "name": "raw_z",
+        "height": 12,
+        "nodes": 69
+      },
+      {
+        "name": "raw_inverse_x",
+        "height": 12,
+        "nodes": 55
+      },
+      {
+        "name": "log25",
+        "height": 25,
+        "nodes": 230
+      },
+      {
+        "name": "pole",
+        "height": 24,
+        "nodes": 107
+      },
+      {
+        "name": "test_group",
+        "height": 79,
+        "nodes": 516
+      },
+      {
+        "name": "slope",
+        "height": 169,
+        "nodes": 2682
+      },
+      {
+        "name": "height_certificate",
+        "height": 207,
+        "nodes": 261
+      },
+      {
+        "name": "multiply.scalar",
+        "height": 17,
+        "nodes": 137
+      },
+      {
+        "name": "multiply.guard",
+        "height": 2,
+        "nodes": 18
+      },
+      {
+        "name": "multiply",
+        "height": 214,
+        "nodes": 84
+      },
+      {
+        "name": "natural",
+        "height": 227,
+        "nodes": 127
+      },
+      {
+        "name": "raw_negate",
+        "height": 9,
+        "nodes": 37
+      },
+      {
+        "name": "value.signed_encode",
+        "height": 234,
+        "nodes": 139
+      },
+      {
+        "name": "value.abs",
+        "height": 9,
+        "nodes": 24
+      },
+      {
+        "name": "value.close_coordinates",
+        "height": 34,
+        "nodes": 272
+      },
+      {
+        "name": "value.test",
+        "height": 249,
+        "nodes": 776
+      },
+      {
+        "name": "value.exceptions",
+        "height": 43,
+        "nodes": 488
+      },
+      {
+        "name": "scalar.integer_constant_0",
+        "height": 17,
+        "nodes": 137
+      },
+      {
+        "name": "scalar.integer_constant_1",
+        "height": 17,
+        "nodes": 137
+      },
+      {
+        "name": "scalar.integer_constant_2",
+        "height": 17,
+        "nodes": 137
+      },
+      {
+        "name": "scalar.integer_constant_3",
+        "height": 17,
+        "nodes": 137
+      },
+      {
+        "name": "scalar.integer_constant_4",
+        "height": 17,
+        "nodes": 137
+      }
+    ],
+    "recipes": {
+      "power_value": {
+        "height": 232,
+        "constraint_count": 470
+      },
+      "precision": {
+        "height": 237,
+        "constraint_count": 292018
+      },
+      "close": {
+        "height": 239,
+        "constraint_count": 7
+      },
+      "main": {
+        "height": 251,
+        "constraint_count": 2
+      },
+      "value_union": {
+        "height": 252,
+        "constraint_count": 2
+      },
+      "value": {
+        "height": 254,
+        "constraint_count": 2
+      },
+      "integers": {
+        "height": 256,
+        "constraint_count": 1
+      }
+    },
+    "explicit_constant_nodes": 185,
+    "finite_constructor_nodes": 50,
+    "root_height_bound": 256,
+    "degree_bound": "B^2048",
+    "largest_absolute_coefficient_bound": "2^(B^2048)",
+    "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
+    "simplified_B": "T+1, by the companion proof and the literal digit checks",
+    "max_fixed_literal_decimal_digits": 3181317,
+    "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
+    "guard_log2_l1_bound": "2^39*(T+1)^5",
+    "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Inherits baseline arithmetic assumptions."
+  },
+  "degrees": {
+    "coefficient_order": "constant, T, T^2, ...",
+    "domain": "the prescribed fixed T (in particular T>=1)",
+    "baseline": {
+      "root": [
+        8754752,
+        32768,
+        0,
+        110592
+      ],
+      "templates": {
+        "member": [
+          28
+        ],
+        "raw_add": [
+          120
+        ],
+        "raw_z": [
+          24
+        ],
+        "raw_inverse_x": [
+          24
+        ],
+        "log25": [
+          100
+        ],
+        "pole": [
+          150
+        ],
+        "test_group": [
+          480
+        ],
+        "slope": [
+          2128
+        ],
+        "height_certificate": [
+          8512
+        ],
+        "multiply.scalar": [
+          16,
+          32
+        ],
+        "multiply.guard": [
+          2,
+          0,
+          0,
+          108
+        ],
+        "multiply": [
+          34048,
+          128,
+          0,
+          432
+        ],
+        "natural": [
+          136192,
+          512,
+          0,
+          1728
+        ],
+        "value.signed_encode": [
+          544768,
+          2048,
+          0,
+          6912
+        ],
+        "value.abs": [
+          8
+        ],
+        "value.close_coordinates": [
+          112
+        ],
+        "value.test": [
+          136192,
+          512,
+          0,
+          1728
+        ],
+        "value.exceptions": [
+          9616
+        ],
+        "scalar.integer_constant_0": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_1": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_2": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_3": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_4": [
+          16,
+          32
+        ]
+      },
+      "recipes": {
+        "power_value": [
+          272384,
+          1024,
+          0,
+          3456
+        ],
+        "precision": [
+          544768,
+          2048,
+          0,
+          6912
+        ],
+        "close": [
+          1089536,
+          4096,
+          0,
+          13824
+        ],
+        "main": [
+          2179072,
+          8192,
+          0,
+          27648
+        ],
+        "value_union": [
+          2188688,
+          8192,
+          0,
+          27648
+        ],
+        "value": [
+          4377376,
+          16384,
+          0,
+          55296
+        ],
+        "integers": [
+          8754752,
+          32768,
+          0,
+          110592
+        ]
+      }
+    },
+    "optimized": {
+      "root": [
+        8754752,
+        32768
+      ],
+      "templates": {
+        "member": [
+          28
+        ],
+        "raw_add": [
+          120
+        ],
+        "raw_z": [
+          24
+        ],
+        "raw_inverse_x": [
+          24
+        ],
+        "log25": [
+          100
+        ],
+        "pole": [
+          150
+        ],
+        "test_group": [
+          480
+        ],
+        "slope": [
+          2128
+        ],
+        "height_certificate": [
+          8512
+        ],
+        "multiply.scalar": [
+          16,
+          32
+        ],
+        "multiply.guard": [
+          6,
+          24
+        ],
+        "multiply": [
+          34048,
+          128
+        ],
+        "natural": [
+          136192,
+          512
+        ],
+        "raw_negate": [
+          4
+        ],
+        "value.signed_encode": [
+          544768,
+          2048
+        ],
+        "value.abs": [
+          8
+        ],
+        "value.close_coordinates": [
+          112
+        ],
+        "value.test": [
+          136192,
+          512
+        ],
+        "value.exceptions": [
+          9616
+        ],
+        "scalar.integer_constant_0": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_1": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_2": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_3": [
+          16,
+          32
+        ],
+        "scalar.integer_constant_4": [
+          16,
+          32
+        ]
+      },
+      "recipes": {
+        "power_value": [
+          272384,
+          1024
+        ],
+        "precision": [
+          544768,
+          2048
+        ],
+        "close": [
+          1089536,
+          4096
+        ],
+        "main": [
+          2179072,
+          8192
+        ],
+        "value_union": [
+          2188688,
+          8192
+        ],
+        "value": [
+          4377376,
+          16384
+        ],
+        "integers": [
+          8754752,
+          32768
+        ]
+      }
+    },
+    "premise": "The manuscript's fixed-index and cutoff estimates, verified constructor shapes, and degree substitution inequality; see README.md."
+  },
+  "verification": {
+    "passed": true,
+    "guards": {
+      "cases": 495,
+      "originalComparisons": 12,
+      "offCarrier": 18,
+      "degreeNodes": [
+        {
+          "T": 0,
+          "degreeBound": 3,
+          "nodes": 95
+        },
+        {
+          "T": 1,
+          "degreeBound": 15,
+          "nodes": 218
+        },
+        {
+          "T": 2,
+          "degreeBound": 27,
+          "nodes": 338
+        }
+      ]
+    },
+    "arithmetic": {
+      "cases": 945,
+      "negateRejections": 25,
+      "mutationsRejected": 5
+    },
+    "natural": {
+      "integerCases": 1101,
+      "wrapperCases": 4,
+      "changedInputsRejected": 8,
+      "scope": "Wrapper tests use exact contracts for the baseline arithmetic predicates"
+    },
+    "bundleMutations": {
+      "rejected": 3
+    },
+    "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
+  }
+}

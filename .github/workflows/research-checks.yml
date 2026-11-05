@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: '24.22.1'
       - run: python scripts/check_construction.py --report build/construction-checks.json
+      - run: python scripts/check_optimized_construction.py --report build/optimized-construction-checks.json
       - run: python scripts/check_lean.py
       - name: Validate theorem inventory bindings and references
         run: python docs/theorem-application-audit/validate.py
@@ -33,7 +34,9 @@ jobs:
         if: always()
         with:
           name: construction-checks
-          path: build/construction-checks.json
+          path: |
+            build/construction-checks.json
+            build/optimized-construction-checks.json
 
   paper:
     name: Paper build

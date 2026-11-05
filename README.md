@@ -82,6 +82,16 @@ The root-level TeX source is the reviewed revision of the 11/5 manuscript; the m
 
 ## Reproducible checks
 
+An [optimized construction](construction/optimized/README.md) preserves the dated
+artifacts and provides a separately reproducible equivalent specification with
+211,983,774,909 total variables (27.62% fewer). It simplifies constant arithmetic,
+uses three squares for nonnegativity, and replaces the cubic-size finite exclusion
+product with an interpolation guard using the same one witness. The accompanying
+notes prove the interface equivalences and give degree and coefficient bounds;
+these changes inherit the original construction's arithmetic inputs. Run
+`python scripts/check_optimized_construction.py --output build/optimized` to
+generate its expression and verify the pinned reports. CI runs both constructions.
+
 The [curated construction](construction/README.md) provides the finite expression, its pinned input, and executable checks without requiring the historical archive. The [Lean directory](lean/README.md) contains the byte-identical accepted helper snapshot, its dependency pins, and a separate unproved target.
 
 The [CI workflow](.github/workflows/research-checks.yml) checks construction regeneration, finite arithmetic cases and inventory consistency, compiles the 11/5 manuscript, and builds the accepted Lean modules with an axiom audit. See [build instructions](docs/building.md) for local commands and the limits of each check. A green CI run concerns those checks, not completion of the main proof.
