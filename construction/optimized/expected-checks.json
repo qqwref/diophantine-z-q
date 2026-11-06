@@ -2,8 +2,8 @@
   "build": {
     "passed": true,
     "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
-    "optimizedPolynomialSha256": "3b2283d6e84341a84580652bb95e3cdea0c8c9ba5541210f7c400e58f24235b1",
-    "bytes": 22951819,
+    "optimizedPolynomialSha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
+    "bytes": 22951632,
     "baselineTotalVariables": 292890231905,
     "totalVariables": 211983774909,
     "variablesRemoved": 80906456996,
@@ -203,7 +203,7 @@
     "arithmeticTheoremProved": false
   },
   "bounds": {
-    "candidate_sha256": "3b2283d6e84341a84580652bb95e3cdea0c8c9ba5541210f7c400e58f24235b1",
+    "candidate_sha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
     "total_variables": 211983774909,
     "rational_witnesses": 211983774908,
     "templates": [
@@ -726,17 +726,289 @@
       "fiveTorsionExtensionBound": 480,
       "absoluteUpperBreakBound": 432,
       "conductorExponentBound": 866,
-      "modulusBits": 435,
-      "bmorParameter": 2,
-      "primeSupportBound": "Hmax^3",
-      "cutoffTripleTowerUpperExponent": {
-        "dated": 9013,
-        "factorialOnly": 3331,
-        "previousHomEstimate": 837,
-        "fullThreeAndPrimeSupport": 242
+      "catalogue": {
+        "modulus": 185640,
+        "unitClasses": 36864,
+        "primesPerClass": 22,
+        "floor": 324,
+        "size": 811008,
+        "maximum": 23150593,
+        "lastResidue": 131233,
+        "sha256AscendingUint32LE": "70dc6d12c8ddbed7a5fa1f8f00ce2a6df2b781fe2888a95306e7141ae72b4d4b",
+        "verification": "Complete Eratosthenes sieve and first-22 count in every unit class"
       },
-      "constantMutationsRejected": 12,
-      "scope": "Exact finite consequences of cutoff.md; geometric and formal-group arguments are not machine formalized"
+      "residues": {
+        "exceptions": [
+          {
+            "prime": 11,
+            "allowedSlopes": [
+              4,
+              5,
+              8,
+              10
+            ],
+            "tripleSumSize": 11
+          },
+          {
+            "prime": 19,
+            "allowedSlopes": [
+              2,
+              3,
+              5,
+              6,
+              7,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              17
+            ],
+            "tripleSumSize": 19
+          }
+        ],
+        "cauchyDavenportThreshold": 23,
+        "forbiddenPerSlope": 14,
+        "retainedPrimes": [
+          2,
+          3,
+          5,
+          7,
+          13,
+          17
+        ]
+      },
+      "reductionOrders": {
+        "cases": 36,
+        "reductions": [
+          {
+            "prime": 3,
+            "residueDegree": 2,
+            "order": 16,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 5,
+            "residueDegree": 2,
+            "order": 20,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 7,
+            "residueDegree": 1,
+            "singularSmoothOrder": 7
+          },
+          {
+            "prime": 7,
+            "residueDegree": 1,
+            "order": 8,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 11,
+            "residueDegree": 2,
+            "order": 100,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 13,
+            "residueDegree": 2,
+            "order": 180,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 17,
+            "residueDegree": 1,
+            "order": 20,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 17,
+            "residueDegree": 1,
+            "order": 16,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 19,
+            "residueDegree": 2,
+            "order": 400,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 23,
+            "residueDegree": 1,
+            "order": 24,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 23,
+            "residueDegree": 1,
+            "order": 24,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 29,
+            "residueDegree": 2,
+            "order": 800,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 31,
+            "residueDegree": 1,
+            "order": 32,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 31,
+            "residueDegree": 1,
+            "order": 32,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 37,
+            "residueDegree": 2,
+            "order": 1440,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 41,
+            "residueDegree": 1,
+            "order": 52,
+            "largestPrimeFactor": 13
+          },
+          {
+            "prime": 41,
+            "residueDegree": 1,
+            "order": 32,
+            "largestPrimeFactor": 2
+          },
+          {
+            "prime": 43,
+            "residueDegree": 2,
+            "order": 1764,
+            "largestPrimeFactor": 7
+          },
+          {
+            "prime": 47,
+            "residueDegree": 1,
+            "order": 48,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 47,
+            "residueDegree": 1,
+            "order": 48,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 53,
+            "residueDegree": 2,
+            "order": 2720,
+            "largestPrimeFactor": 17
+          },
+          {
+            "prime": 59,
+            "residueDegree": 2,
+            "order": 3600,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 61,
+            "residueDegree": 2,
+            "order": 3700,
+            "largestPrimeFactor": 37
+          },
+          {
+            "prime": 67,
+            "residueDegree": 2,
+            "order": 4356,
+            "largestPrimeFactor": 11
+          },
+          {
+            "prime": 71,
+            "residueDegree": 1,
+            "order": 72,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 71,
+            "residueDegree": 1,
+            "order": 72,
+            "largestPrimeFactor": 3
+          },
+          {
+            "prime": 73,
+            "residueDegree": 1,
+            "order": 68,
+            "largestPrimeFactor": 17
+          },
+          {
+            "prime": 73,
+            "residueDegree": 1,
+            "order": 80,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 79,
+            "residueDegree": 1,
+            "order": 80,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 79,
+            "residueDegree": 1,
+            "order": 80,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 83,
+            "residueDegree": 2,
+            "order": 7056,
+            "largestPrimeFactor": 7
+          },
+          {
+            "prime": 89,
+            "residueDegree": 1,
+            "order": 80,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 89,
+            "residueDegree": 1,
+            "order": 100,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 97,
+            "residueDegree": 1,
+            "order": 80,
+            "largestPrimeFactor": 5
+          },
+          {
+            "prime": 97,
+            "residueDegree": 1,
+            "order": 116,
+            "largestPrimeFactor": 29
+          },
+          {
+            "prime": 101,
+            "residueDegree": 2,
+            "order": 10004,
+            "largestPrimeFactor": 61
+          }
+        ],
+        "scope": "Exact point counts through p=101; the general CM proof is in cutoff.md"
+      },
+      "primeSupportBound": "Hmax",
+      "heightBase": "4^(866*Hmax)",
+      "cutoff": {
+        "formula": "(96*10^13)^13 * 2^8861398783796",
+        "upperBound": "2^(2^44)",
+        "previousUpperBound": "2^(2^(2^242))"
+      },
+      "constantMutationsRejected": 16,
+      "scope": "Exact finite consequences of cutoff.md; geometric, formal-group and prime-pattern arguments are not machine formalized"
     },
     "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
   }

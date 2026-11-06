@@ -1,17 +1,19 @@
-# A 144-degree field and a smaller prime-support bound
+# A 144-degree field, a finite catalogue and a smaller cutoff
 
 The optimized construction now prescribes
 
 \[
 F=D=144,\quad G_0=480,\quad E_0=866,\quad
-R=\max(D,H_{\max}^3,10^{12}).
+W=185640,\quad R=\max(D,H_{\max}),\quad Q=4^{RE_0}.
 \]
 
-The catalogue, least formal multiplier M, cstar=4M, pole-clearing constant
-ell, and formula `T=(48*Aheight)^13` keep their definitions. Q, Aheight and
-T use the new constants. No witnesses or fixed-expression operators are
-added. The dated construction is unchanged. The earlier optimization is
-preserved in [cutoff-previous.md](cutoff-previous.md).
+The smaller catalogue is proved in [prime-catalogue.md](prime-catalogue.md).
+Its maximum is exactly H=23150593. P0 still contains every prime through 324;
+M, cstar=4M, ell and `T=(48*Aheight)^13` keep their formulas, evaluated with
+the new catalogue. No witnesses or fixed-expression operators are added.
+The dated construction is unchanged. The first cutoff optimization is
+preserved in [cutoff-previous.md](cutoff-previous.md); git history preserves
+the intervening `R=H^3` version.
 
 These arguments use the manuscript's stated geometric and arithmetic
 inputs. The new implications and numerical estimates are proved below;
@@ -179,118 +181,176 @@ the same conductor proof with the normality just established. For p>R,
 the original tame exponent bound two remains valid since R>=D. No changes
 are made to the modularity, CM, isogeny, or theta-height inputs.
 
-## 4. Bound the prime support of cstar, rather than its value
+## 4. The reduction orders have no prime factors exceeding p
 
-Let H=Hmax and Ns be the unchanged catalogue/small-prime product. The
-manuscript constructs `k=Ns^4*m0` passing the formal-depth condition, where
-m0 is a product of actual reduction orders at odd places dividing Ns.
-Those orders are at most p^3 for places over p (including the stated
-singular reduction at seven). Thus every prime factor of k is at most H^3.
+Write d=75-53*sqrt(2). The curve is `E: y^2=x^3-d^2*x`, a quadratic
+twist of `E_base: y^2=x^3-x`. At a good place above an odd rational prime p,
+the residue degree is one or two. We claim that **every prime divisor of the
+reduction group order is at most p**, even when that order is of size p^2.
+
+For residue degree one, full rational two-torsion makes the order divisible
+by four. Hasse gives `#E <= p+1+2*sqrt(p) < 4p`. Each odd prime divisor is
+therefore at most `#E/4 < p`; the prime two is smaller than p as well.
+
+For residue degree two, E is a quadratic twist of E_base over F_(p^2).
+If p=3 modulo 4, pairing x with -x in the Legendre-symbol point count gives
+trace zero for E_base over F_p. Its squared Frobenius has trace -2p, so
+the two twist orders over F_(p^2) are `(p+1)^2` and `(p-1)^2`. Since p+1
+and p-1 are even, their prime factors are at most p.
+
+If p=1 modulo 4, use exactly the manuscript's Gaussian-integer Frobenius
+argument: the automorphism `(x,y)->(-x,iy)` commutes with Frobenius, whose
+integrality then gives `pi=a+bi`, with `a^2+b^2=p`. Over F_(p^2) its trace
+is `2(a^2-b^2)`. Negating this trace gives the quadratic twist. The two
+possible group orders factor as
+
+\[
+\begin{aligned}
+p^2+1-2(a^2-b^2)&=(p+1-2a)(p+1+2a),\\
+p^2+1+2(a^2-b^2)&=(p+1-2b)(p+1+2b).
+\end{aligned}
+\]
+
+Each factor is positive and even, and at most `p+1+2*sqrt(p)`. For p>=7
+this is less than 2p, so its prime divisors are at most
+`max(2,(p+1+2*sqrt(p))/2) < p`. The remaining p=5 gives orders 20 and 32,
+whose prime divisors are at most five. The p=3 case was already covered.
+This proves the claim for all odd good primes. The only bad odd place is
+one of the places above seven; its nonsingular group has order seven, as
+in the manuscript. The other place over seven is good. Two is handled by
+the existing formal-group argument and contributes only the prime two.
+
+`verify-reduction-orders.js` independently counts points on the actual curve
+over every residue field above odd p<=101, including the inert quadratic
+fields. It checks the factorization alternatives and the prime-factor bound
+on 36 reductions. These fixtures supplement the general argument above.
+
+### Pass from reduction orders to the least formal multiplier
+
+The manuscript constructs `k=Ns^4*m0` passing the formal-depth condition,
+where m0 is a product of actual reduction orders at odd places dividing Ns.
+The preceding result shows that every prime factor of k is at most H:
+all rational primes dividing Ns are at most H, since H>324.
 
 We need divisibility `M|k`, not just the manuscript's inequality `M<=k`.
-This follows because the accepted multiples form a subgroup. Here are the
-local details, including the ramified prime two.
+This follows because the accepted multiples form a subgroup. The ring of
+integers of Q(sqrt(2)) is Z[sqrt(2)]. For a normalized common denominator
+expression `1/x=(a+b*sqrt(2))/c`, the code's conditions `Ns^4|a`, `Ns^4|b`
+and `gcd(c,Ns)=1` are equivalent to `1/x in Ns^4 O_v` at every place above
+primes dividing Ns. With e_v=v(p) and a_p=v_p(Ns), this is
+`v(1/x)>=4 e_v a_p`.
 
-The ring of integers of Q(sqrt(2)) is Z[sqrt(2)]. For a normalized common
-denominator expression `1/x=(a+b*sqrt(2))/c`, the code's conditions
-`Ns^4|a`, `Ns^4|b`, and `gcd(c,Ns)=1` are equivalent to
-`1/x in Ns^4 O_v` at every place v above primes dividing Ns. If
-e_v=v(p) and a_p=v_p(Ns), this means `v(1/x)>=4 e_v a_p`.
+The equation is integral. Negative abscissa valuation places a point in its
+formal subgroup, where z=-x/y satisfies `v(1/x)=2v(z)`. The condition is
+exactly membership in `v(z)>=2 e_v a_p`, including the identity. These
+formal filtrations are subgroups, also at two where e_v=2. The accepted
+points form their intersection. Its inverse image under `n -> [n]P0` is
+a subgroup MZ of Z. Existence follows from k, so its least positive index
+M divides k. The manuscript's dyadic-formality argument ensures the
+reciprocal is defined at every nonidentity search step.
 
-The displayed elliptic equation is integral at every place. Negative
-abscissa valuation places a point in its formal subgroup, where
-`z=-x/y` satisfies `v(1/x)=2v(z)`. The condition is therefore exactly
-membership in the formal subgroup `v(z)>=2 e_v a_p`, including the
-identity. These formal filtrations are subgroups, also at two where
-e_v=2. The accepted points form their intersection. Its inverse image
-under the homomorphism `n -> [n]P0` is a subgroup MZ of Z. Existence follows
-from the already constructed k, and the least positive accepted index M
-therefore divides k. The manuscript's dyadic-formality argument ensures
-the reciprocal is defined at each nonidentity search step.
+Thus every prime divisor of cstar=4M is at most H. All other primes in S_mul
+are at most H as well. We may therefore take `R=max(D,H)`. The new catalogue
+has H=23150593>D=144, so **R=H**.
 
-As cstar=4M, every prime divisor of cstar is at most H^3. All other primes
-in S_mul are at most H. Thus it is valid to replace the old R prescription by
+## 5. Replace the primorial estimate and remove the artificial floor
 
-\[
-\boxed{R=\max(D,H^3,10^{12}).}
-\]
-
-No catalogue primes, multiplier, or pole certificate have changed. We only
-use a sharper bound for the same bad-prime set in the height estimate.
-
-The class 1 modulo W contains no prime of the form 1+0W. Its 22nd prime
-is at least 1+22W, so H>22W. Since W has 435 bits, H>10^12 and H>D.
-Consequently the new prescription satisfies **R=H^3, not R=D**.
-
-## 5. An explicit cutoff bound and all fixed scalar indices
-
-Use BMOR Corollary 6.17 with parameter A=2, as in the earlier supplement:
-for `x>=exp(.06 sqrt(W) (log W)^3)`, its unconditional theta error is
-at most `x/(160(log x)^2)`. See the
-[published author PDF, p. 507](https://personal.math.ubc.ca/~bennett/BeMaObRe-IJM-2018.pdf).
-Here `2^434<W<2^435`. Take `X=2^(2^240)` for this estimate only.
-From `1/2<log 2<7/10`,
+The height proof uses `R^R` to bound the product of primes at most R.
+The elementary bound
 
 \[
-\log W<305,\quad
-.06\sqrt W(\log W)^3<.06\,2^{218}305^3<2^{239}<\log X.
+\prod_{p\le n}p<4^n\qquad(n\ge1)
 \]
 
-Also `160*(log X)^2>2W`. Thus theta(X;W,a)>X/(2W), and
-`pi(X;W,a)>X/(2W log X)>22`. This proves H<X for the same catalogue;
-no prime at most 324 belongs to a unit class and X is composite. Hence
+is enough to replace this throughout by `4^R`. Here is a proof to keep the
+constant explicit. Induct on integer n. The cases n=1,2 are immediate.
+If n>=4 is even, n is composite and the product equals that for n-1.
+If n=2m+1 is odd, every prime m+1<p<=2m+1 divides `binom(2m+1,m)`.
+This binomial coefficient is at most `2^(2m)`, because the two equal
+central coefficients are terms in a row summing to `2^(2m+1)`.
+Induction gives a product less than `4^(m+1)*2^(2m)=4^n`.
+
+Set
 
 \[
-\log_2R=3\log_2H<3\cdot2^{240}.
+\boxed{Q=4^{RE_0}.}
 \]
 
-The CM comparison still gives `Ccm<2^(50000D^2)<Q^17` for D=144 and
-R=H^3>10^12. Therefore
+The character construction now gives `m<=2*4^R*M`, and consequently
+`[L':Q]<=4D*4^R*M<=Q*M`: indeed `4D=576<4^5` and
+`5+R<=866R`. The conductor estimate becomes
+`N<=product(p<=R)p^E0*M^2<=Q*M^2`. These are the two places where
+R^R occurred. All subsequent estimates depend on Q, M, and D through
+these inequalities.
+
+The former R>=10^12 requirement is sufficient but unnecessary. The actual
+uses are the preceding field-degree domination and Q>=10^12 in the
+modular-Jacobian/isogeny estimates. Both hold for this prescription.
+In fact H>22W=4084080, so `Q=4^(866H)>10^12`. Also
 
 \[
-T=(96\cdot10^{13})^{13}R^{221E_0R}
- =(96\cdot10^{13})^{13}R^{191386R}.
+\log_2 Q^{17}=34\cdot866H>50000\cdot144^2,
 \]
 
-Since `191386<2^18` and `log2((96*10^13)^13)<1024`,
+so Q^17 dominates the unchanged CM bound `Ccm<2^(50000D^2)`.
+The original tame-conductor argument only needs R>=D and R>=max(S),
+already proved above. This checks the height estimate with the new Q and
+without the floor 10^12, rather than applying its stated old constants
+outside their hypotheses.
+
+## 6. Explicit T and fixed scalar indices
+
+With D=144, E0=866 and H=23150593, the maximum defining Aheight is Q^17.
+The same cutoff formula now gives the explicit integer
 
 \[
-\log_2T<2^{3\cdot2^{240}+261}<2^{2^{242}},\qquad
-\boxed{T<2^{\,2^{\,2^{242}}}}.
+\boxed{T=(96\cdot10^{13})^{13}\,2^{8861398783796}.}
 \]
 
-Small D does **not** bound cstar or the source literals. We recheck their
-size separately, rather than retaining the former `index<=2D+1` claim.
-There are at most 22W catalogue primes, so
-`Ns<=H^(22W+1)`. The unchanged proof `M<=Ns^10` yields
-`cstar<=H^(230W)`. Similarly `ell<=H^(17000W)`. From H>22W and
+Here `8861398783796=442*866*23150593`. In particular
 
 \[
-T=(96\cdot10^{13})^{13}H^{574158H^3},
+\log_2 T<1024+8861398783796<2^{44},\qquad
+\boxed{T<2^{\,2^{44}}}.
 \]
 
-both constants, and the other fixed constants below Aheight, are smaller
-than T. For a division index j coming from cstar, `|j|<=2*cstar+1`, so
+The expression has about 2.668 trillion decimal digits. This is an explicit
+formula for T, not a claim that its digits or the full polynomial have been
+materialized. The catalogue maximum, unlike T, has been computed exactly.
+
+All fixed scalar bounds need rechecking, because cstar and ell are much
+larger than D and R. There are 66 primes in P0, and 811008 catalogue primes,
+all at most H. Hence `Ns<=H^(811008+66)<H^(22W)`. Retaining the manuscript's
+`M<=Ns^10` proves `cstar<=H^(230W)`. Likewise the unchanged formula
+`ell=12*P0^2916*Hproduct^732` gives `ell<=H^(17000W)`.
+Since H<2^25, the exact integer inequalities
 
 \[
-\deg\psi_j\le2(|j|+1)^3\le128\,c_*^3
- <H^{690W+1}<H^{33H}<T.
+25\cdot17000W<8861398783796,\qquad
+25(690W+1)<8861398783796
 \]
 
-All extra scalar literals have fewer than 20 million binary digits, checked
-by `bounds.py`. For those indices, `128*n^3<2^(60000007)`, whereas
-`log2 T>R>2^1302`. The small rational coordinates used by the three-square
-wrapper also fit this literal bound. Thus their division polynomials have
-degree below T as well. Fixed constants and coefficient expressions still
-fit B=T+1, using the original recurrence norm estimates.
+show ell<T and, for every division index j from cstar,
 
-The height/false-triple proof, with the revised field, conductor and prime
-bounds, excludes every false triple outside [-T,T]^3. The interpolation
-guard excludes those inside it. Equivalence of the full multiplication
-predicate follows; guards at different cutoffs are not equivalent on all
-rational inputs in isolation.
+\[
+\deg\psi_j\le2(|j|+1)^3\le128c_*^3
+ <H^{690W+1}<T.
+\]
 
-The final optimized polynomial still satisfies
+The index shapes are still `cstar`, `cstar+1`, `cstar-1`, and `2*cstar`.
+Every extra literal has fewer than 20 million binary digits, as checked
+by bounds.py. Its corresponding division-polynomial degree is bounded by
+`128*n^3<2^60000007<T`. The same argument bounds the new three-square
+wrapper coordinates. The other fixed constants are below Aheight or covered
+by the estimates above, so the existing B=T+1 syntax bound remains valid.
+
+The changed catalogue is justified by prime-catalogue.md; the height and
+false-triple proof now excludes every false triple outside [-T,T]^3.
+The interpolation guard excludes those inside. This proves equivalence of
+the full multiplication predicate under the manuscript's other inputs.
+Guards at different cutoffs are not equivalent in isolation on all tuples.
+
+No variable count or template degree formula changes:
 
 \[
 \deg P\le32768T+8754752,\qquad
@@ -298,22 +358,24 @@ The final optimized polynomial still satisfies
 |[X^\alpha]P|\le2^{(T+1)^{2048}}.
 \]
 
-In particular degree is below `2^(2^(2^243))`, and coefficients are below
-`2^(2^(2^(2^243)))`. Total variables remain 211,983,774,909.
+Convenient absolute bounds are degree below `2^(2^45)` and coefficient
+magnitude below `2^(2^(2^56))`. The total variable count remains
+211983774909. All these are majorants, not exact degrees or heights.
 
-## Verification and remaining scope
+## Verification and provenance
 
-`verify-cutoff.js` checks the finite level-group count, branch discriminants,
-centralizer examples, small formal-depth fixtures, conductor arithmetic,
-catalogue inequalities and corrupted-prescription rejection. The complete
-construction is regenerated and compared to pinned reports. These checks
-do not machine-formalize the geometric, Galois or formal-group proofs above.
-Original source hashes and dated artifacts are preserved. The arguments and
-implementation were developed with ChatGPT/Codex at the repository owner's
-request; no independent human review is claimed.
+The full suite checks every catalogue residue class and its exact maximum,
+the exceptional residue sums, actual reduction orders at small primes,
+finite level-group counts, branch discriminants, transitive centralizer
+examples, formal-depth fixtures, conductor arithmetic and the above integer
+inequalities. Mutations to the prescribed constants are rejected. The complete
+construction is regenerated and compared to pinned reports, while the 25
+original source hashes and dated artifacts are preserved.
 
-There is no asserted optimality of D=144. A smaller D would require sharper
-information about the particular cover's arithmetic action or a different
-field of definition. For the present cutoff, Hmax is now the dominant
-constant. Further reductions of D alone change the finite height factors,
-but not the leading tower scale coming from the catalogue estimate.
+These tests do not machine-formalize the geometric, Galois, formal-group or
+prime-pattern arguments, or independently certify the manuscript's main
+claim. The arguments and implementation were developed with ChatGPT/Codex
+at the repository owner's request; no independent human review is claimed.
+Neither W=185640 nor D=144 is asserted optimal. The remaining height bound
+has log(T) proportional to H; a substantial further improvement would need
+a smaller catalogue, a tighter conductor product, or a sharper height input.

@@ -90,7 +90,10 @@ product with an interpolation guard using the same one witness. The
 [smaller-cutoff supplement](construction/optimized/cutoff.md) reduces the
 field-degree bound to D=144, uses its full three-torsion marking and sharper
 prime-support estimates, and reduces the cutoff bound from
-`2^(2^(2^9013))` to `2^(2^(2^242))`, without adding variables. The accompanying
+`2^(2^(2^9013))` to `2^(2^44)`, without adding variables. A
+[smaller catalogue](construction/optimized/prime-catalogue.md) uses W=185640
+and has an exactly computed maximum H=23150593. The curve structure and an
+elementary primorial bound give R=H and Q=4^(866H). The accompanying
 notes prove the interface equivalences and give degree and coefficient bounds;
 these changes inherit the original construction's arithmetic inputs. Run
 `python scripts/check_optimized_construction.py --output build/optimized` to

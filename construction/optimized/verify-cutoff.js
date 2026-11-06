@@ -2,10 +2,12 @@
 
 const assert = require("node:assert/strict"), path = require("node:path");
 const {execFileSync} = require("node:child_process");
-const {W} = require("../fixed-certificate-constants.js");
+const {P0, W: oldW, primesThrough} = require("../fixed-certificate-constants.js");
+const {verifyCatalogue, verifyResidueExceptions} = require("./prime-catalogue.js");
+const {verifyReductionOrders} = require("./verify-reduction-orders.js");
 const {P, pointMul, localDepthCondition} = require("../rational-field-arithmetic.js");
 const {fixedDefinitions, evaluateFixed} = require("../finite-polynomial-expressions.js");
-const {optimizedFixedDefinitions, auditOptimizedFixedDefinitions} = require("./constants.js");
+const {CATALOGUE_MODULUS: W, optimizedFixedDefinitions, auditOptimizedFixedDefinitions} = require("./constants.js");
 
 function permutations(n) {
   const result = [];
@@ -71,41 +73,43 @@ function verifyCutoff() {
   assert(D < 2n**8n && D*G0 < 2n**17n);
   assert(2n*(1n+17n) <= U0 && 2n*(1n+8n) <= U0);
   assert.equal(U0, 432n); assert.equal(E0, 866n);
-  assert(50000n*D**2n < 17n*E0*10n**12n); // Q^17 dominates Ccm, log2 R>1
-
-  assert(2n**434n < W && W < 2n**435n && W > 100000n);
-  // BMOR A=2, log(2)<7/10: log(W)<305, sqrt(W)<2^218.
-  assert(435n*7n < 305n*10n);
-  assert(6n*2n**218n*305n**3n < 100n*2n**239n);
-  assert(160n*(2n**239n)**2n > 2n*W);
-  assert(44n*W*2n**240n < 2n**681n && 681n < 2n**240n); // pi(X)>22
-  assert(22n*W*2n**240n < 2n**680n);
-  assert(435n + 2n**680n < 2n**681n);
-  assert(2n + 10n*2n**681n < 2n**685n); // optional absolute bound on cstar
-  assert(4n + 2916n*435n + 732n*2n**680n < 2n**690n);
-  assert.equal(221n*E0, 191386n); assert.equal(3n*221n*E0, 574158n);
-  assert(191386n < 2n**18n);
+  const catalogue = verifyCatalogue(), residues = verifyResidueExceptions();
+  const H = BigInt(catalogue.maximum), N = BigInt(catalogue.size);
+  assert(2n**434n < oldW && oldW < 2n**435n);
+  assert.equal(primesThrough(324).length, 66);
+  assert(P0 < H**66n && N+66n < 22n*W);
+  assert(H > 22n*W && H > D && H < 2n**25n);
+  assert(4n*D < 4n**5n && 5n+H <= E0*H); // degree bound with Q=4^(R E0)
+  assert(2n*E0*H > 40n && 2n**40n > 10n**12n); // Q>10^12
+  assert(50000n*D**2n < 34n*E0*H); // Q^17 dominates Ccm
+  const powerOfTwo = 442n*E0*H;
+  assert.equal(powerOfTwo, 8861398783796n);
   assert((96n*10n**13n)**13n < 2n**1024n);
-  assert(3n*2n**240n + 261n < 2n**242n); // log2(log2 T)<2^242
-  assert(3n*434n === 1302n && 60000007n < 2n**1302n);
-  assert(690n < 33n*22n && 17000n < 574158n); // scalar bounds in powers of H
+  assert(powerOfTwo+1024n < 2n**44n); // log2(T)<2^44
+  assert(1n+220n*W < 230n*W);
+  assert(1n+2916n*66n+732n*N < 17000n*W);
+  assert(25n*17000n*W < powerOfTwo); // ell<T
+  assert(25n*(690n*W+1n) < powerOfTwo); // division polynomials for cstar
+  assert(60000007n < powerOfTwo); // all extra literal indices
 
   const definitions = optimizedFixedDefinitions(), baseline = fixedDefinitions();
   auditOptimizedFixedDefinitions(definitions);
   for (const [name, expected] of Object.entries({F: D, D, G0, E0}))
     assert.equal(evaluateFixed(definitions[name], definitions), expected);
   for (const h of [1n, 10000n, 1000000n]) {
-    const expected = h**3n > 10n**12n ? h**3n : 10n**12n;
+    const expected = h > D ? h : D;
     assert.equal(evaluateFixed(definitions.R, definitions, {Hmax: h}), expected);
   }
   for (const name of Object.keys(baseline))
-    if (!["F", "D", "G0", "E0", "R"].includes(name)) assert.deepEqual(definitions[name], baseline[name]);
+    if (!["W", "F", "D", "G0", "E0", "R", "Q"].includes(name)) assert.deepEqual(definitions[name], baseline[name]);
   let rejected = 0;
   for (const [name, bad] of [
     ["F", baseline.F], ["F", ["factorial", ["literal", "144"]]],
     ["D", baseline.D], ["D", ["literal", "1"]],
     ["G0", ["literal", "479"]], ["E0", ["literal", "865"]],
+    ["W", baseline.W], ["W", ["literal", "1"]], ["Q", baseline.Q],
     ["T", ["literal", "1"]], ["R", ["ref", "D"]], ["R", baseline.R],
+    ["R", ["max", ["ref", "D"], ["pow", ["ref", "Hmax"], ["literal", "3"]], ["pow", ["literal", "10"], ["literal", "12"]]]],
     ["Hmax", ["literal", "1"]], ["cstar", ["literal", "1"]]]) {
     assert.throws(() => auditOptimizedFixedDefinitions({...definitions, [name]: bad})); rejected++;
   }
@@ -114,11 +118,12 @@ function verifyCutoff() {
     centralizers: verifyCentralizers(), formalDepth: verifyFormalDepth(),
     splittingFieldBound: 144, homFieldBound: 144, fiveTorsionExtensionBound: gl2,
     absoluteUpperBreakBound: Number(U0), conductorExponentBound: Number(E0),
-    modulusBits: W.toString(2).length, bmorParameter: 2,
-    primeSupportBound: "Hmax^3", cutoffTripleTowerUpperExponent:
-      {dated: 9013, factorialOnly: 3331, previousHomEstimate: 837, fullThreeAndPrimeSupport: 242},
+    catalogue, residues, reductionOrders: verifyReductionOrders(),
+    primeSupportBound: "Hmax", heightBase: "4^(866*Hmax)",
+    cutoff: {formula: "(96*10^13)^13 * 2^8861398783796", upperBound: "2^(2^44)",
+      previousUpperBound: "2^(2^(2^242))"},
     constantMutationsRejected: rejected,
-    scope: "Exact finite consequences of cutoff.md; geometric and formal-group arguments are not machine formalized"};
+    scope: "Exact finite consequences of cutoff.md; geometric, formal-group and prime-pattern arguments are not machine formalized"};
 }
 module.exports = {verifyCutoff};
 if (require.main === module) console.log(JSON.stringify(verifyCutoff(), null, 2));

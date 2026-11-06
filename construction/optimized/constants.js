@@ -2,17 +2,20 @@
 
 const {fixedDefinitions, validateFixedExpression, ref, lit} = require("../finite-polynomial-expressions.js");
 
-// Preserve the catalogue, formal multiplier and cutoff formula. The fibre
-// field already defines all Hom groups. R bounds prime support, not cstar.
-// See cutoff.md for the geometric argument and all downstream estimates.
+const CATALOGUE_MODULUS = 185640n; // 8 * 3 * 5 * 7 * 13 * 17
+
+// Keep P0 (all primes <=324), but use the smaller catalogue proved in
+// prime-catalogue.md. The CM reduction orders give prime support <=Hmax.
+// See cutoff.md for the field, height and downstream scalar estimates.
 function optimizedFixedDefinitions(extra = {}) {
   const definitions = fixedDefinitions(extra);
+  definitions.W = lit(CATALOGUE_MODULUS);
   definitions.F = lit(144);
   definitions.D = ref("F");
   definitions.G0 = lit(480);
   definitions.E0 = lit(866);
-  definitions.R = ["max", ref("D"), ["pow", ref("Hmax"), lit(3)],
-    ["pow", lit(10), lit(12)]];
+  definitions.R = ["max", ref("D"), ref("Hmax")];
+  definitions.Q = ["pow", lit(4), ["mul", ref("R"), ref("E0")]];
   return definitions;
 }
 
@@ -32,4 +35,4 @@ function auditOptimizedFixedDefinitions(definitions) {
   return known;
 }
 
-module.exports = {optimizedFixedDefinitions, auditOptimizedFixedDefinitions};
+module.exports = {CATALOGUE_MODULUS, optimizedFixedDefinitions, auditOptimizedFixedDefinitions};
