@@ -2,8 +2,8 @@
   "build": {
     "passed": true,
     "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
-    "optimizedPolynomialSha256": "77c6dde017a55801293810c52f6a0d771ff1159930a5cbacc34a5438bcf4b30a",
-    "bytes": 22951995,
+    "optimizedPolynomialSha256": "3b2283d6e84341a84580652bb95e3cdea0c8c9ba5541210f7c400e58f24235b1",
+    "bytes": 22951819,
     "baselineTotalVariables": 292890231905,
     "totalVariables": 211983774909,
     "variablesRemoved": 80906456996,
@@ -203,7 +203,7 @@
     "arithmeticTheoremProved": false
   },
   "bounds": {
-    "candidate_sha256": "77c6dde017a55801293810c52f6a0d771ff1159930a5cbacc34a5438bcf4b30a",
+    "candidate_sha256": "3b2283d6e84341a84580652bb95e3cdea0c8c9ba5541210f7c400e58f24235b1",
     "total_variables": 211983774909,
     "rational_witnesses": 211983774908,
     "templates": [
@@ -686,19 +686,57 @@
         "effectiveLevelIndexBound": 36,
         "effectiveNormalizerIndexBound": 144
       },
-      "splittingFieldBound": "144!",
-      "homFieldBound": "2*F*51840^(F-1)",
-      "factorialBits": 830,
+      "branchQuadraticDiscriminants": [
+        10800,
+        43200,
+        43200
+      ],
+      "centralizers": [
+        {
+          "name": "cyclic regular",
+          "points": 4,
+          "centralizerOrder": 4
+        },
+        {
+          "name": "symmetric nonfree",
+          "points": 3,
+          "centralizerOrder": 1
+        },
+        {
+          "name": "nonabelian regular",
+          "points": 6,
+          "centralizerOrder": 6
+        }
+      ],
+      "formalDepth": {
+        "cases": 66,
+        "fixtures": [
+          {
+            "Ns": 2,
+            "leastMultiplier": 2
+          },
+          {
+            "Ns": 4,
+            "leastMultiplier": 8
+          }
+        ]
+      },
+      "splittingFieldBound": 144,
+      "homFieldBound": 144,
+      "fiveTorsionExtensionBound": 480,
+      "absoluteUpperBreakBound": 432,
+      "conductorExponentBound": 866,
       "modulusBits": 435,
-      "symplecticGroupOrder": 51840,
       "bmorParameter": 2,
+      "primeSupportBound": "Hmax^3",
       "cutoffTripleTowerUpperExponent": {
         "dated": 9013,
         "factorialOnly": 3331,
-        "structural": 837
+        "previousHomEstimate": 837,
+        "fullThreeAndPrimeSupport": 242
       },
-      "constantMutationsRejected": 9,
-      "scope": "Exact finite consequences of cutoff.md; geometric field arguments are not machine formalized"
+      "constantMutationsRejected": 12,
+      "scope": "Exact finite consequences of cutoff.md; geometric and formal-group arguments are not machine formalized"
     },
     "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
   }

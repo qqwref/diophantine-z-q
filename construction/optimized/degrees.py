@@ -30,7 +30,9 @@ def multiply(a, b):
 
 
 def verify_index(expr, constants):
-    # Exactly n,n+1,n-1,2n, with n=cstar or a positive extra scalar <D.
+    # Exactly n,n+1,n-1,2n, with n=cstar or a positive extra scalar.
+    # cutoff.md proves the degree bound separately for these two cases;
+    # the optimized constants no longer satisfy cstar<=D or R=D.
     if expr[0] == "ref":
         if expr[1] == "cstar":
             return

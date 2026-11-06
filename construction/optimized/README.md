@@ -34,7 +34,8 @@ node construction/optimized/verify.js
 | Power-value private witnesses | 17,786,698 | 12,870,618 |
 | Multiplication private witnesses | 35,134 | 35,134 |
 | Finite guard private witnesses | 1 | 1 |
-| Cutoff upper bound | `2^(2^(2^9013))` | `2^(2^(2^837))` |
+| Field-degree bound D | `324!*3^(256*(324!)^4)` | 144 |
+| Cutoff upper bound | `2^(2^(2^9013))` | `2^(2^(2^242))` |
 | Source precision polynomial | Same pinned input | Same pinned input |
 
 The reduction is 80,906,456,996 variables (27.6235%). The existing simultaneous
@@ -53,16 +54,18 @@ The finite guard improves its degree, coefficient-norm majorant and finite
 construction work without increasing its witness count. No quartic conversion
 or three-copy multiplication correction is used.
 
-The optimized constants now use `F=144!` and `D=2*F*51840^(F-1)` instead
-of `F=324!` and `D=F*3^(256*F^4)`. The cover degree uses the actual level
-group modulo central signs; the Hom-field estimate uses polarized
-isomorphisms between copies of one abelian surface. The same prime catalogue
-is bounded using BMOR Corollary 6.17 with parameter two. Full arguments,
-downstream checks, and an additional unimplemented cover refinement are in
+The optimized constants now use `F=D=144`, `G0=480`, `E0=866` and
+`R=max(D,Hmax^3,10^12)`. The Q-defined transitive normalizer action removes
+the fibre-field factorial; the full three-marking already defines all
+conjugacy Hom groups. The quaternionic action and normality sharpen the
+torsion and conductor estimates. Finally, the least formal multiplier
+divides a constructed multiple, bounding its prime support by Hmax^3.
+Full proofs, the catalogue estimate and downstream checks are in
 [cutoff.md](cutoff.md). The catalogue, formal multiplier, and formula
-`T=(48*Aheight)^13` retain their definitions; all height constants depending
-on D use its new value. This reduces the guard's construction work and the
-simultaneous degree/coefficient majorants without adding variables.
+`T=(48*Aheight)^13` retain their definitions. This reduces the guard's
+construction work and the simultaneous degree/coefficient majorants without
+adding variables. The previous `F=144!` optimization is recorded separately
+in [cutoff-previous.md](cutoff-previous.md).
 
 The changes below preserve the existential projection, assuming the same
 integer-index model and arithmetic predicates used by the dated construction.
@@ -218,25 +221,20 @@ each individual coefficient is smaller than a corresponding old coefficient.
 
 For the prescribed enormous T, `B=T+1>=2^20`, both the new guard degree and
 log norm fit the old constructor majorants `B^4` and `B^8`. The new rational
-coordinates of `[3]P0` and their denominators are far below D, hence below T.
+coordinates of `[3]P0` and their denominators satisfy the checked literal
+size bound, hence are below T by [cutoff.md](cutoff.md).
 The maximum defining B is still T+1, now using the smaller optimized T.
 `bounds.py` accounts for negation and the new constructor and verifies the
 same root-height majorant 256. It uses height four, rather than two, for the
 standalone generator and root equations, as clarified in the manuscript.
 
-The sharper degree calculation in `degrees.py` uses `R=D` from the manuscript
-for the dated construction and from [cutoff.md](cutoff.md) for the optimized
-construction. This implies `cstar<=D`; all extra scalar literals are also
-below D by its literal-digit bound. Every occurring division-polynomial
-index is `n`, `n+1`, `n-1` or `2n` for one of these scalars, hence at most
-`2D+1`. The dated recurrence majorant gives
-
-\[
-\deg\psi_j\le2(|j|+1)^3\le128D^3<T.
-\]
-
-The final inequality follows from the prescribed cutoff
-`T=(96*10^13)^13 D^(2210 G0^2 D^3)`.
+The sharper degree calculation in `degrees.py` uses different scalar bounds
+for the two prescriptions. The dated construction has `R=D` and scalar
+indices at most `2D+1`, yielding `deg psi_j <=128D^3<T_dated`. The optimized
+construction has `D=144` and `R=Hmax^3`; cstar and the extra literals need
+not be below D or R. Section 5 of [cutoff.md](cutoff.md) instead bounds
+`cstar<=Hmax^(230W)` and separately uses the checked literal-digit bound to
+prove `deg psi_j<T_optimized` for every occurring index.
 The traversal verifies those index shapes. It assigns degree majorants T to
 division-polynomial constructors, `54T^3` to the old guard product, and
 `12T+3` to the new guard constructor. Addition takes a coefficientwise maximum
@@ -261,8 +259,9 @@ certificate. Negative structural tests corrupt operations, natural guards,
 cutoff bindings and the shared shift.
 
 `verify-cutoff.js`, included in the same suite, rechecks the finite level
-group, the factorial and catalogue inequalities, and the symplectic group
-order. It rejects altered F, D, T, R and catalogue/multiplier bindings.
+group, branch discriminants, transitive centralizer examples, formal-depth
+fixtures, GL2(F5) count, conductor arithmetic and catalogue inequalities.
+It rejects altered F, D, G0, E0, T, R and catalogue/multiplier bindings.
 These are finite checks of the proofs in `cutoff.md`; they do not constitute
 machine verification of the geometric or Galois arguments.
 

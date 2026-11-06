@@ -2,14 +2,17 @@
 
 const {fixedDefinitions, validateFixedExpression, ref, lit} = require("../finite-polynomial-expressions.js");
 
-// Preserve the catalogue, formal multiplier and cutoff formula. Only the
-// degree bounds for the fibre splitting field and its Hom field change.
+// Preserve the catalogue, formal multiplier and cutoff formula. The fibre
+// field already defines all Hom groups. R bounds prime support, not cstar.
 // See cutoff.md for the geometric argument and all downstream estimates.
 function optimizedFixedDefinitions(extra = {}) {
   const definitions = fixedDefinitions(extra);
-  definitions.F = ["factorial", lit(144)];
-  definitions.D = ["mul", ["mul", lit(2), ref("F")],
-    ["pow", lit(51840), ["add", ref("F"), lit(-1)]]];
+  definitions.F = lit(144);
+  definitions.D = ref("F");
+  definitions.G0 = lit(480);
+  definitions.E0 = lit(866);
+  definitions.R = ["max", ref("D"), ["pow", ref("Hmax"), lit(3)],
+    ["pow", lit(10), lit(12)]];
   return definitions;
 }
 

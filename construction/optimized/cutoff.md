@@ -1,242 +1,319 @@
-# Smaller field bounds and cutoff
+# A 144-degree field and a smaller prime-support bound
 
-This supplement changes only the optimized prescription. It retains the
-manuscript's arithmetic inputs, its primes through 324, its prime catalogue,
-its least formal multiplier, and the formula `T=(48*Aheight)^13`. In
-`constants.js` the replacements are
+The optimized construction now prescribes
 
 \[
-F=144!,\qquad J=51840,\qquad D=2FJ^{F-1}.
+F=D=144,\quad G_0=480,\quad E_0=866,\quad
+R=\max(D,H_{\max}^3,10^{12}).
 \]
 
-All subsequent constants use this new D. This is a bound for the same field
-constructed in the manuscript, not a different field with unproved
-ramification properties. In particular, changing a guard's cutoff alone
-would not justify the optimization: the height argument must be rerun with
-the improved field bound, as below.
+The catalogue, least formal multiplier M, cstar=4M, pole-clearing constant
+ell, and formula `T=(48*Aheight)^13` keep their definitions. Q, Aheight and
+T use the new constants. No witnesses or fixed-expression operators are
+added. The dated construction is unchanged. The earlier optimization is
+preserved in [cutoff-previous.md](cutoff-previous.md).
 
-## 1. The cover has degree at most 144
+These arguments use the manuscript's stated geometric and arithmetic
+inputs. The new implications and numerical estimates are proved below;
+they are not an independent verification of the manuscript's main theorem.
 
-The six-contact proof in `diophantine_zq.tex`, starting with the definition
-of K0 and K3, bounds the normalizer quotient outside the level group by four.
-The displayed maximal order modulo three has 81 elements, of which 72 are
-units. The original `verify-six-contact.js` already checks these counts by
-exhausting the multiplication table, and also checks that 36 units have norm
-one. Equivalently, the local order has residue field F9 and a radical of
-size nine, giving `(9-1)*9=72` units.
+## 1. Remove the factorial from the fibre field
 
-The manuscript proves that central finite ideles act trivially on the entire
-level-three curve, including its determinant components. The two central
-units +1 and -1 have distinct reductions modulo three. Thus
+### The exact model and action over Q
+
+Use the manuscript's quaternion algebra B=(2,-3), maximal order O, and
+principal-polarization datum mu=2j+ij. On the left B-module V=B, the form
+`Trd(mu^-1 x conjugate(y))` is multiplied by nrd(b) under right multiplication
+by b. Its group of B-linear similitudes is therefore `(B^op)^*`, identified
+with B*. This is the quaternionic PEL datum underlying the full-three
+moduli problem in the manuscript.
+
+At three, the Tate lattice is free of rank one over O_3, as proved in the
+manuscript. The same division-valuation argument works at two; at split
+primes the assertion follows from the module description for M2(Z_p).
+A marking `O/3O -> A[3]` is exactly an orbit of integral Tate
+trivializations modulo `K3=ker(Ohat^* -> (O/3O)^*)`: unit lifts at three
+exist, and maximal level is imposed elsewhere. Thus this moduli problem
+has level K3, with **all** determinant components, rather than one component
+with a selected value of the Weil pairing. The polarization and O-action
+are the same data used to construct X35 and descend it by the five-marking
+group. That descent represents this very functor; it is not an unspecified
+Q-form of the complex curve.
+
+For the primary-source identification, Milne's *Introduction to Shimura
+Varieties*, Example 12.4(d), gives reflex field Q for this quaternion algebra
+over Q. The PEL discussion on p. 126 identifies the moduli Galois action
+with the canonical model. Theorem 13.6 makes right translations by adelic
+elements rational over that reflex field. Apply it at K=K'=K3 to each
+element of its normalizer N. These translations are automorphisms of the
+same full-three moduli model over Q. The description at the ramified prime
+three uses the Tate-lattice argument above, not an application of Buzzard's
+integral theorem outside its allowed level hypotheses.
+
+References: [Milne, pp. 112, 118, 126](https://www.jmilne.org/math/xnotes/svi.pdf);
+[Buzzard, sections 1-2](https://www.ma.imperial.ac.uk/~buzzard/maths/research/papers/shimura.pdf)
+for the moduli and level conventions used by the manuscript.
+
+The manuscript proves that central finite ideles act trivially. Its finite
+normalizer action therefore factors through `N/(Af^* K3)`. The 81-element
+order modulo three has 72 units. Dividing by the distinct central signs
+and including the four normalizer cosets gives order at most
 
 \[
-|K_0/((K_0\cap\mathbb A_f^*)K_3)|\le72/2=36,
-\qquad [N:\mathbb A_f^*K_3]\le4\cdot36=144.
+4\cdot(72/2)=144.
 \]
 
-The quotient degree is therefore at most 144. Normalizing a base change does
-not increase its generic degree. The finite etale fibre used in the proof
-has at most 144 points, so its splitting field K is normal of degree at most
-144!. The original unramifiedness argument still applies: we retain the
-larger excluded set of primes through 324. No claim that the splitting field
-has degree at most 144 is needed here.
+The geometric quotient is the manuscript's genus-zero j-line. This is also
+the quotient over Q: its three branch points have distinct indices 4,6,2,
+so each is rational, and the unique coordinate assigning them
+`0,infinity,-16/27` is rational. It agrees with the normalized j-coordinate.
 
-## 2. Bound the Hom field using its actual factors
+### Splitting a fibre
 
-Write n=[K:Q], and enumerate the conjugates of A/K as
-`A_1=A, A_2, ..., A_n`, including their principal polarizations. Normality
-of K makes all these polarized varieties K-defined. The manuscript proves
-that they have the same geometric polarized moduli point. Choose polarized
-geometric isomorphisms `phi_i:A_1 -> A_i`, with `phi_1=id`.
+For a transitive group action on a set S of m points, any permutation
+commuting with the group is determined by the image of one fixed point:
+`c(g*s)=g*c(s)`. Its centralizer in Sym(S) consequently has at most m
+elements. If the action is defined over Q, the Galois action on a rational
+fibre commutes with it. The fibre splitting field therefore has degree at
+most m, not m!. This does not require a free action or a connected cover.
 
-Let W0=Res(K/Q) A, E the kernel field of the Galois action on End(W0 over Qbar),
-and L=EK, exactly as in the original proof. Over Qbar,
+For admissible rational u, the manuscript's `j=J(u)` avoids all three branch
+values. F(u) is nonzero; G has discriminant -10800; and
+`G^6-97200F^2=H^2`, where the three quadratic factors of H have discriminants
+10800, 43200, 43200, all nonsquares. Thus j is finite, nonzero, and not
+-16/27. Near this fibre the pulled-back cover is etale, so normalization
+does not change it. The transitive Q-defined normalizer action therefore
+acts on exactly the fibre used to define K in the manuscript. It follows that
 
 \[
-W_0\simeq\prod_{i=1}^n A_i,\qquad
-\operatorname{Hom}(A_i,A_j)
- =\phi_j\operatorname{End}(A_1)\phi_i^{-1}.
+K/\mathbb Q\text{ is normal},\qquad [K:\mathbb Q]\le144.
 \]
 
-For sigma fixing K, its action on the whole endomorphism lattice is therefore
-determined by its action on End(A_1) and its images of the n-1 chosen phi_i.
-This counts a finite image; it does not assume that the set of choices is a
-direct-product Galois group.
+The normalized-cover ramification argument is unchanged, retaining all
+excluded primes through 324. It still makes K unramified outside
+`S union supp(M_S(u))`.
 
-There are at most two actions on End(A_1). The O-action is defined over K,
-so Galois fixes B=O tensor Q pointwise. By the geometric classification in
-the six-contact proof, End^0(A_1) is either B or M2(k), with k imaginary
-quadratic. In the first case everything is fixed. In the second case B and
-the centre k generate the whole algebra: `B tensor_Q k -> M2(k)` is an
-isomorphism (the map is injective by simplicity and both dimensions over Q
-are eight). An automorphism fixing B is thus determined by its restriction
-to k, giving at most two choices. Its action on the integral endomorphism
-lattice is determined by its action on this rational algebra. This argument
-uses the classification geometrically, before passing to the Hom field;
-there is no assumption that the endomorphisms are already K-defined.
+## 2. Full three-torsion already defines every Hom group
 
-For each i, sigma(phi_i) lies in the finite torsor of polarized isomorphisms
-from A_1 to A_i. Its size is |Aut(A_1,lambda_1)|. This group is finite, acts
-faithfully on integral first homology, and preserves the unimodular
-alternating pairing of the principal polarization. Reduction modulo three
-is injective on finite subgroups, by the same torsion-free level-three lemma
-used in the manuscript. Consequently
+Here is an elementary lemma that eliminates the former Hom-field extension.
+If abelian varieties A and B over a characteristic-zero field k have all
+their three-torsion points k-rational, then every geometric homomorphism
+`A -> B` is defined over k.
+
+Indeed, restriction to torsion gives a Galois-equivariant injection
 
 \[
-|\operatorname{Aut}(A_1,\lambda_1)|
-\le|\operatorname{Sp}_4(\mathbb F_3)|
-=3^4(3^2-1)(3^4-1)=51840=J.
+\operatorname{Hom}(A_{\bar k},B_{\bar k})/
+3\operatorname{Hom}(A_{\bar k},B_{\bar k})
+\hookrightarrow \operatorname{Hom}(A[3],B[3]).
 \]
 
-It follows that
+To check injectivity, a homomorphism vanishing on A[3] factors through the
+quotient map `[3]:A -> A`, so it is three times another homomorphism.
+The right side has trivial Galois action. The Hom group is a finite-rank
+free Z-module and its Galois image is finite (choose a finite basis and a
+finite extension defining every basis map). That finite image lies in the
+kernel of reduction `GL_r(Z) -> GL_r(F3)`, which is torsion-free. Hence
+the image is trivial.
+
+For completeness, the last fact follows by taking an element of prime
+order in any nontrivial finite subgroup and writing it as `I+3^a B`, with
+a>=1 and B nonzero modulo three. If its prime order is not three, the
+first term of the binomial expansion cannot vanish modulo `3^(a+1)`.
+If the order is three, the first term has valuation a+1 and all remaining
+terms have larger valuation. Both cases are impossible.
+
+The universal three-marking on the fine full-three moduli scheme gives
+`A[3] = (O/3O)_K`, a constant group scheme. Since K is normal, each conjugate
+A_i is K-defined and also has full rational three-torsion. The lemma applies
+to **every ordered pair** A_i,A_j. Thus all blocks of the endomorphism
+lattice of `Res(K/Q) A` are fixed by G_K. For the manuscript's kernel
+field E, we have E contained in K, so its original field L=EK is just K.
+
+Consequently the valid uniform bound is
 
 \[
-[L:K]=|\rho(G_K)|\le2J^{n-1},\qquad
-[L:\mathbb Q]\le2nJ^{n-1}\le2FJ^{F-1}=D.
+\boxed{D=144.}
 \]
 
-Normality is retained because L is still EK for the original kernel field E.
-At every prime outside the manuscript's set S union supp(M_S(u)), K is
-unramified and each conjugate has good reduction. Inertia acts trivially on
-the appropriate Tate module and hence on the endomorphism lattice of W0.
-The original argument therefore still proves that L is unramified there.
-It still defines every ordered conjugacy Hom group, not just End(A).
+Normality and the ramification statement are preserved, and all conjugacy
+homomorphisms needed later are defined. Neither the 51840 automorphism
+bound nor an auxiliary quadratic endomorphism-field extension is needed.
 
-The downstream CM, modularity, conductor and isogeny estimates use this
-degree bound and these field properties. Their formulas remain applicable
-with the smaller D. The dimension of the Weil restriction is no longer
-used as a proxy for an arbitrary integral Galois representation.
+## 3. Reduce the torsion and conductor constants
 
-## 3. Check the catalogue does not become the dominant constant
+At five, `O/5O` is M2(F5). The four-dimensional A[5] is the sum of two
+copies of its two-dimensional simple module. Its commuting automorphism
+group is GL2(F5), of order `(25-1)(25-5)=480`. Galois over K commutes with
+the K-defined O-action, so `[K(A[5]):K]<=480`. Use G0=480 instead of the
+generic GL4(F5) bound. At primes other than three, A[3] is already rational
+over K, so no torsion-field extension is needed for Raynaud's criterion.
 
-The manuscript's coarse catalogue estimate alone is insufficient to prove
-R=D for this new D. Use the same primary source with parameter A=2 instead
-of A=1: Bennett--Martin--O'Bryant--Rechnitzer, *Explicit bounds for primes in
-arithmetic progressions*, Corollary 6.17, published p. 507
-([author PDF](https://personal.math.ubc.ca/~bennett/BeMaObRe-IJM-2018.pdf)).
-For q>=10^5 and x>=exp(0.06 sqrt(q) (log q)^3), it gives
+Moreover, K(A[5])/Q is normal. The manuscript proves that every conjugate
+of A is geometrically polarized-isomorphic to A. Section 2 makes those
+isomorphisms K-defined. They identify the fields generated by the
+five-torsion of A and any conjugate, so every Q-conjugate of K(A[5]) equals
+K(A[5]). Its degree is at most `144*480=69120`.
+
+For a **normal** local extension of degree a, the manuscript's different
+calculation bounds its last positive upper break by
+`2*(1+log2(a))`; the detour through a normal closure of degree a! is
+unnecessary. Since 69120<2^17, all torsion-extension breaks are below 36.
+For K alone, the same bound is below 18. Raynaud's criterion and the
+manuscript's Tate-module argument therefore kill the relevant wild action
+above 36 at every prime.
+
+The remaining character beta is unchanged. At odd primes its restriction
+to G_K is tame. At two the existing unit/logarithm argument bounds its
+relative break by 3e, where e<=144, hence by 432. Above the last break of
+K_v/Q_2, the subgroup formula has `psi(u)>=u`; beta is therefore trivial
+on absolute upper groups with u>432. On these groups the isogeny cocycle
+is trivial too. We can take a common absolute break bound U0=432 and hence
 
 \[
-|\vartheta(x;q,a)-x/\varphi(q)|
-\le \frac{x}{160(\log x)^2}\quad ((a,q)=1).
+\boxed{E_0=2+2U_0=866.}
 \]
 
-This is the unconditional version, including possible exceptional zeros.
-Here W=4 product(p<=324) has exactly 435 bits. Set `X=2^(2^250)` only for
-this estimate; it does not replace the catalogue in the polynomial.
-Using `1/2<log 2<1`,
+This replaces `10*(D*G0)^2`, not merely its numerical arguments. It uses
+the same conductor proof with the normality just established. For p>R,
+the original tame exponent bound two remains valid since R>=D. No changes
+are made to the modularity, CM, isogeny, or theta-height inputs.
+
+## 4. Bound the prime support of cstar, rather than its value
+
+Let H=Hmax and Ns be the unchanged catalogue/small-prime product. The
+manuscript constructs `k=Ns^4*m0` passing the formal-depth condition, where
+m0 is a product of actual reduction orders at odd places dividing Ns.
+Those orders are at most p^3 for places over p (including the stated
+singular reduction at seven). Thus every prime factor of k is at most H^3.
+
+We need divisibility `M|k`, not just the manuscript's inequality `M<=k`.
+This follows because the accepted multiples form a subgroup. Here are the
+local details, including the ramified prime two.
+
+The ring of integers of Q(sqrt(2)) is Z[sqrt(2)]. For a normalized common
+denominator expression `1/x=(a+b*sqrt(2))/c`, the code's conditions
+`Ns^4|a`, `Ns^4|b`, and `gcd(c,Ns)=1` are equivalent to
+`1/x in Ns^4 O_v` at every place v above primes dividing Ns. If
+e_v=v(p) and a_p=v_p(Ns), this means `v(1/x)>=4 e_v a_p`.
+
+The displayed elliptic equation is integral at every place. Negative
+abscissa valuation places a point in its formal subgroup, where
+`z=-x/y` satisfies `v(1/x)=2v(z)`. The condition is therefore exactly
+membership in the formal subgroup `v(z)>=2 e_v a_p`, including the
+identity. These formal filtrations are subgroups, also at two where
+e_v=2. The accepted points form their intersection. Its inverse image
+under the homomorphism `n -> [n]P0` is a subgroup MZ of Z. Existence follows
+from the already constructed k, and the least positive accepted index M
+therefore divides k. The manuscript's dyadic-formality argument ensures
+the reciprocal is defined at each nonidentity search step.
+
+As cstar=4M, every prime divisor of cstar is at most H^3. All other primes
+in S_mul are at most H. Thus it is valid to replace the old R prescription by
 
 \[
-0.06\sqrt W(\log W)^3
- <2^{-4}2^{218}2^{27}=2^{241}<\log X,
-\qquad
-\frac1{160(\log X)^2}<\frac1{2W}.
+\boxed{R=\max(D,H^3,10^{12}).}
 \]
 
-Hence theta(X;W,a)>X/(2W), and the number of primes in each unit class is
-greater than X/(2W log X)>22. None of these primes can be at most 324;
-X itself is composite. Keeping the same first 22 primes per class gives
+No catalogue primes, multiplier, or pole certificate have changed. We only
+use a sharper bound for the same bad-prime set in the height estimate.
+
+The class 1 modulo W contains no prime of the form 1+0W. Its 22nd prime
+is at least 1+22W, so H>22W. Since W has 435 bits, H>10^12 and H>D.
+Consequently the new prescription satisfies **R=H^3, not R=D**.
+
+## 5. An explicit cutoff bound and all fixed scalar indices
+
+Use BMOR Corollary 6.17 with parameter A=2, as in the earlier supplement:
+for `x>=exp(.06 sqrt(W) (log W)^3)`, its unconditional theta error is
+at most `x/(160(log x)^2)`. See the
+[published author PDF, p. 507](https://personal.math.ubc.ca/~bennett/BeMaObRe-IJM-2018.pdf).
+Here `2^434<W<2^435`. Take `X=2^(2^240)` for this estimate only.
+From `1/2<log 2<7/10`,
 
 \[
-H_{\max}<X,\quad
-\log_2H_{\rm cat}<22W2^{250}<2^{690},\quad
-\log_2N_s<2^{691}.
+\log W<305,\quad
+.06\sqrt W(\log W)^3<.06\,2^{218}305^3<2^{239}<\log X.
 \]
 
-The existing formal-group argument M<=Ns^10 then implies
+Also `160*(log X)^2>2W`. Thus theta(X;W,a)>X/(2W), and
+`pi(X;W,a)>X/(2W log X)>22`. This proves H<X for the same catalogue;
+no prime at most 324 belongs to a unit class and X is composite. Hence
 
 \[
-\log_2 c_*<2+10\cdot2^{691}<2^{695}.
+\log_2R=3\log_2H<3\cdot2^{240}.
 \]
 
-Similarly, for the unchanged pole-clearing constant,
-`log2 ell < 4+2916*435+732*2^690 < 2^700`.
-
-Exact integer inequalities give
+The CM comparison still gives `Ccm<2^(50000D^2)<Q^17` for D=144 and
+R=H^3>10^12. Therefore
 
 \[
-2^{829}<144!<2^{830},\qquad
-2^{829}<\log_2D<831+16F<2^{834}.
+T=(96\cdot10^{13})^{13}R^{221E_0R}
+ =(96\cdot10^{13})^{13}R^{191386R}.
 \]
 
-Thus D exceeds Hmax, cstar, ell, every explicit scalar literal, and 10^12.
-In particular the unchanged definition `R=max(D,Hmax,cstar,10^12)` still
-satisfies R=D. The new proof uses an estimate on the same catalogue, not a
-replacement catalogue that might invalidate the pole certificates.
-
-## 4. Propagate through height, cutoff and polynomial bounds
-
-The manuscript's comparison `Ccm < 2^(50000 D^2) < Q_D^17` continues to
-hold. Thus its explicit formulas now yield
+Since `191386<2^18` and `log2((96*10^13)^13)<1024`,
 
 \[
-T=(96\cdot10^{13})^{13}D^{2210G_0^2D^3},\qquad G_0=116064000000.
+\log_2T<2^{3\cdot2^{240}+261}<2^{2^{242}},\qquad
+\boxed{T<2^{\,2^{\,2^{242}}}}.
 \]
 
-The original height and false-multiplication argument applies with this D
-and the corresponding Aheight. It bounds every false triple admitted by
-the height certificate inside [-T,T]^3. The finite interpolation guard at
-this smaller T excludes all of them. True multiplication triples continue
-to pass. The finite guards for different cutoffs are not asserted equivalent
-on arbitrary rational inputs in isolation; equivalence uses the height
-certificate. The interpolation/product equivalence at a *fixed* cutoff
-remains valid on all rational inputs.
-
-As before, `log2 T < D^8`. Since `log2 D < 2^834`, this gives
+Small D does **not** bound cstar or the source literals. We recheck their
+size separately, rather than retaining the former `index<=2D+1` claim.
+There are at most 22W catalogue primes, so
+`Ns<=H^(22W+1)`. The unchanged proof `M<=Ns^10` yields
+`cstar<=H^(230W)`. Similarly `ell<=H^(17000W)`. From H>22W and
 
 \[
-\boxed{T<2^{\,2^{\,2^{837}}}}.
+T=(96\cdot10^{13})^{13}H^{574158H^3},
 \]
 
-For comparison, applying just F=144! in the old generic Hom-field formula
-gives `log2 D < 2^3328`, and hence `T < 2^(2^(2^3331))`. The manuscript
-states `T_dated < 2^(2^(2^9013))`. These are certified upper bounds; no
-astronomical integer has been expanded.
-
-All fixed constants and occurring division indices are still below T;
-the latter are at most 2D+1. In particular
-`deg psi_j <= 2(|j|+1)^3 <= 128D^3 < T`. The original constructor norm
-estimates and the interpolation norm estimate therefore still use B=T+1.
-The same simultaneous bounds are valid with this smaller B:
+both constants, and the other fixed constants below Aheight, are smaller
+than T. For a division index j coming from cstar, `|j|<=2*cstar+1`, so
 
 \[
+\deg\psi_j\le2(|j|+1)^3\le128\,c_*^3
+ <H^{690W+1}<H^{33H}<T.
+\]
+
+All extra scalar literals have fewer than 20 million binary digits, checked
+by `bounds.py`. For those indices, `128*n^3<2^(60000007)`, whereas
+`log2 T>R>2^1302`. The small rational coordinates used by the three-square
+wrapper also fit this literal bound. Thus their division polynomials have
+degree below T as well. Fixed constants and coefficient expressions still
+fit B=T+1, using the original recurrence norm estimates.
+
+The height/false-triple proof, with the revised field, conductor and prime
+bounds, excludes every false triple outside [-T,T]^3. The interpolation
+guard excludes those inside it. Equivalence of the full multiplication
+predicate follows; guards at different cutoffs are not equivalent on all
+rational inputs in isolation.
+
+The final optimized polynomial still satisfies
+
+\[
+\deg P\le32768T+8754752,\qquad
 \deg P\le(T+1)^{2048},\qquad
 |[X^\alpha]P|\le2^{(T+1)^{2048}}.
 \]
 
-They imply degree below `2^(2^(2^838))` and coefficients below
-`2^(2^(2^(2^838)))`. The sharper linear degree traversal also remains
-valid. No variables, equations, or new fixed-expression operators are added.
+In particular degree is below `2^(2^(2^243))`, and coefficients are below
+`2^(2^(2^(2^243)))`. Total variables remain 211,983,774,909.
 
-## 5. Further cover structure: a separate possible improvement
+## Verification and remaining scope
 
-The factorial bound ignores the normalizer action entirely. If a finite
-group acts over Q transitively on a fibre with m geometric points, its
-Galois permutation group centralizes that action. The centralizer has order
-at most m: a commuting permutation is determined by its value at one point,
-since the group is transitive. Its splitting field then has degree at most
-m, rather than m!.
+`verify-cutoff.js` checks the finite level-group count, branch discriminants,
+centralizer examples, small formal-depth fixtures, conductor arithmetic,
+catalogue inequalities and corrupted-prescription rejection. The complete
+construction is regenerated and compared to pinned reports. These checks
+do not machine-formalize the geometric, Galois or formal-group proofs above.
+Original source hashes and dated artifacts are preserved. The arguments and
+implementation were developed with ChatGPT/Codex at the repository owner's
+request; no independent human review is claimed.
 
-Canonical Shimura models carry their adelic action over the reflex field
-([Milne, *Introduction to Shimura Varieties*, section 12](https://www.jmilne.org/math/xnotes/svi.pdf)).
-This suggests F=144 may be available here. Applying it requires identifying
-the manuscript's precise full-three moduli model, normalizer quotient, and
-normalized pullback with that Q-defined action. A transitive action merely
-over Qbar would not suffice: Galois could normalize, instead of centralize,
-it. We have not completed that identification here and do **not** use this
-further substitution in the generated polynomial or its reported bounds.
-If it works, the fixed catalogue and formal multiplier need renewed attention:
-the present proof that R=D would no longer follow.
-
-## Verification status
-
-`verify-cutoff.js` checks the level-group counts, factorial inequalities,
-symplectic group order, and the integer inequalities used above. It also
-checks that the optimized fixed-definition audit rejects old or corrupted
-prescriptions and that every unchanged constant retains its original
-expression. The generated expression and reports have new pinned hashes.
-These tests check the numerical and syntactic consequences; the geometric
-and Galois arguments are the proofs above, conditional on the manuscript's
-stated geometric inputs. They have not received independent human review or
-Lean formalization. This supplement was developed with ChatGPT/Codex at the
-repository owner's request.
+There is no asserted optimality of D=144. A smaller D would require sharper
+information about the particular cover's arithmetic action or a different
+field of definition. For the present cutoff, Hmax is now the dominant
+constant. Further reductions of D alone change the finite height factors,
+but not the leading tower scale coming from the catalogue estimate.
