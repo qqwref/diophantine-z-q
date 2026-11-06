@@ -10,6 +10,8 @@ const {buildOptimizedModel, auditOptimizedLibrary} = require("./model.js");
 const {Translator} = require("./translator.js");
 const {auditEvaluation, auditBundle} = require("./audit.js");
 const {build} = require("./build.js");
+const {verifyCutoff} = require("./verify-cutoff.js");
+const {optimizedFixedDefinitions} = require("./constants.js");
 
 const codeCache = new Map();
 function code(n) {
@@ -88,6 +90,7 @@ function verifyArithmetic() {
   const recipe = translator.translate(source, {name: "fixture", sourceInputCount: 2, naturalInputs: false,
     outputMode: "value", sourceFile: "fixture", sourceHash: "fixture"});
   const bundle = {library: finiteArtifact(library, translator.extraConstants), recipes: {fixture: recipe}};
+  bundle.library.fixedConstants = optimizedFixedDefinitions(translator.extraConstants);
   auditEvaluation(bundle, recipe, source, {inputs: 2, naturalInputs: false, mode: "value"});
   let cases = 0, negateRejections = 0;
   for (const x of [-2, 0, 2]) for (const y of [-1, 0, 1]) {
@@ -196,6 +199,7 @@ function verifyBundleMutations() {
 function verify() {
   return {passed: true, guards: verifyGuards(), arithmetic: verifyArithmetic(),
     natural: verifyNatural(), bundleMutations: verifyBundleMutations(),
+    cutoff: verifyCutoff(),
     scope: "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"};
 }
 module.exports = {verify};

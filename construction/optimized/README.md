@@ -34,6 +34,7 @@ node construction/optimized/verify.js
 | Power-value private witnesses | 17,786,698 | 12,870,618 |
 | Multiplication private witnesses | 35,134 | 35,134 |
 | Finite guard private witnesses | 1 | 1 |
+| Cutoff upper bound | `2^(2^(2^9013))` | `2^(2^(2^837))` |
 | Source precision polynomial | Same pinned input | Same pinned input |
 
 The reduction is 80,906,456,996 variables (27.6235%). The existing simultaneous
@@ -42,8 +43,8 @@ still apply. A separate degree traversal proves the sharper majorants
 
 \[
 \begin{aligned}
-\deg P_{\rm dated}&\le110592T^3+32768T+8754752,\\
-\deg P_{\rm optimized}&\le32768T+8754752.
+\deg P_{\rm dated}&\le110592T_{\rm dated}^3+32768T_{\rm dated}+8754752,\\
+\deg P_{\rm optimized}&\le32768T_{\rm optimized}+8754752.
 \end{aligned}
 \]
 
@@ -51,6 +52,17 @@ These are upper bounds, not exact degrees or claims of essential variables.
 The finite guard improves its degree, coefficient-norm majorant and finite
 construction work without increasing its witness count. No quartic conversion
 or three-copy multiplication correction is used.
+
+The optimized constants now use `F=144!` and `D=2*F*51840^(F-1)` instead
+of `F=324!` and `D=F*3^(256*F^4)`. The cover degree uses the actual level
+group modulo central signs; the Hom-field estimate uses polarized
+isomorphisms between copies of one abelian surface. The same prime catalogue
+is bounded using BMOR Corollary 6.17 with parameter two. Full arguments,
+downstream checks, and an additional unimplemented cover refinement are in
+[cutoff.md](cutoff.md). The catalogue, formal multiplier, and formula
+`T=(48*Aheight)^13` retain their definitions; all height constants depending
+on D use its new value. This reduces the guard's construction work and the
+simultaneous degree/coefficient majorants without adding variables.
 
 The changes below preserve the existential projection, assuming the same
 integer-index model and arithmetic predicates used by the dated construction.
@@ -207,13 +219,14 @@ each individual coefficient is smaller than a corresponding old coefficient.
 For the prescribed enormous T, `B=T+1>=2^20`, both the new guard degree and
 log norm fit the old constructor majorants `B^4` and `B^8`. The new rational
 coordinates of `[3]P0` and their denominators are far below D, hence below T.
-The maximum in the dated definition of B is consequently unchanged.
+The maximum defining B is still T+1, now using the smaller optimized T.
 `bounds.py` accounts for negation and the new constructor and verifies the
 same root-height majorant 256. It uses height four, rather than two, for the
 standalone generator and root equations, as clarified in the manuscript.
 
-The sharper degree calculation in `degrees.py` uses the manuscript's
-`R=D` estimate, which implies `cstar<=D`; all extra scalar literals are also
+The sharper degree calculation in `degrees.py` uses `R=D` from the manuscript
+for the dated construction and from [cutoff.md](cutoff.md) for the optimized
+construction. This implies `cstar<=D`; all extra scalar literals are also
 below D by its literal-digit bound. Every occurring division-polynomial
 index is `n`, `n+1`, `n-1` or `2n` for one of these scalars, hence at most
 `2D+1`. The dated recurrence majorant gives
@@ -246,6 +259,12 @@ predicates, including invalid input and fixed-coordinate rejection cases.
 These oracles do not purport to evaluate the astronomical multiplication
 certificate. Negative structural tests corrupt operations, natural guards,
 cutoff bindings and the shared shift.
+
+`verify-cutoff.js`, included in the same suite, rechecks the finite level
+group, the factorial and catalogue inequalities, and the symplectic group
+order. It rejects altered F, D, T, R and catalogue/multiplier bindings.
+These are finite checks of the proofs in `cutoff.md`; they do not constitute
+machine verification of the geometric or Galois arguments.
 
 `build.js` checks the original expression and precision input hashes, performs
 the optimized translation, and reconstructs the five outer compositions from

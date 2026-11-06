@@ -86,7 +86,10 @@ An [optimized construction](construction/optimized/README.md) preserves the date
 artifacts and provides a separately reproducible equivalent specification with
 211,983,774,909 total variables (27.62% fewer). It simplifies constant arithmetic,
 uses three squares for nonnegativity, and replaces the cubic-size finite exclusion
-product with an interpolation guard using the same one witness. The accompanying
+product with an interpolation guard using the same one witness. The
+[smaller-cutoff supplement](construction/optimized/cutoff.md) uses a 144-point
+cover bound and the structure of its Hom field to reduce the cutoff bound from
+`2^(2^(2^9013))` to `2^(2^(2^837))`, without adding variables. The accompanying
 notes prove the interface equivalences and give degree and coefficient bounds;
 these changes inherit the original construction's arithmetic inputs. Run
 `python scripts/check_optimized_construction.py --output build/optimized` to

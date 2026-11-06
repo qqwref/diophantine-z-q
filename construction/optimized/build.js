@@ -5,6 +5,7 @@ const {hash, composition} = require("../rational-circuit-translator.js");
 const {finiteArtifact} = require("../finite-polynomial-expressions.js");
 const {addVariableShiftTemplates} = require("../variable-shift-polynomial-library.js");
 const {buildOptimizedModel} = require("./model.js");
+const {optimizedFixedDefinitions} = require("./constants.js");
 const {Translator, optimizedDefinitions} = require("./translator.js");
 const {auditBundle} = require("./audit.js");
 
@@ -56,6 +57,7 @@ function build() {
     recipes, baselinePolynomialSha256: manifest.polynomial_sha256};
   bundle.library.finitePolynomialConstructors.finite_guard_interpolation = bundle.definitions.finiteGuardInterpolation;
   bundle.library.finitePolynomialConstructors.version = 2;
+  bundle.library.fixedConstants = optimizedFixedDefinitions(translator.extraConstants);
   const checks = auditBundle(bundle, source, baseline);
   const data = JSON.stringify(bundle) + "\n";
   const report = {passed: true, baselinePolynomialSha256: manifest.polynomial_sha256,

@@ -1,6 +1,7 @@
 "use strict";
 
-const {buildFiniteModel, auditFixedDefinitions, validateFixedExpression} = require("../finite-polynomial-expressions.js");
+const {buildFiniteModel, validateFixedExpression} = require("../finite-polynomial-expressions.js");
+const {auditOptimizedFixedDefinitions} = require("./constants.js");
 const {PolynomialLibrary, auditLibrary} = require("../rational-polynomial-library.js");
 const {EllipticCore} = require("../rational-elliptic-core.js");
 const {indexCode} = require("../rational-field-arithmetic.js");
@@ -33,6 +34,7 @@ function addThreeSquareNatural(library) {
 
 function buildOptimizedModel({interpolation = true} = {}) {
   const library = buildFiniteModel();
+  library.templates[library.id("multiply")].metadata.fixedConstantBinding = "optimizedFixedDefinitions-v2";
   if (library.templates.at(-1).name !== "natural") throw Error("Baseline model order changed");
   library.templates.pop(); library.names.delete("natural");
   if (interpolation) {
@@ -54,7 +56,7 @@ function buildOptimizedModel({interpolation = true} = {}) {
 }
 
 function auditOptimizedLibrary(library) {
-  const known = auditFixedDefinitions(library.fixedConstants);
+  const known = auditOptimizedFixedDefinitions(library.fixedConstants);
   let interpolations = 0;
   const fake = {templates: library.templates.map(t => ({...t, nodes: t.nodes.map((n, i) => {
     if (["const", "var", "add", "mul", "call"].includes(n.op)) return n;

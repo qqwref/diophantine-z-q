@@ -122,7 +122,7 @@ def main():
         "degree_bound": f"B^{8 * height}",
         "largest_absolute_coefficient_bound": f"2^(B^{8 * height})",
         "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
-        "simplified_B": "T+1, by the companion proof and the literal digit checks",
+        "simplified_B": "T_optimized+1, by cutoff.md, the companion proof and the literal digit checks",
         "max_fixed_literal_decimal_digits": max_fixed_digits,
         "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
         "guard_log2_l1_bound": "2^39*(T+1)^5",

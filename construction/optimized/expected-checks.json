@@ -2,8 +2,8 @@
   "build": {
     "passed": true,
     "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
-    "optimizedPolynomialSha256": "c5548922bd76fcedd096526447dc8a1bde8cdaa8ccc55772f7114c9f62b6ab7a",
-    "bytes": 22951983,
+    "optimizedPolynomialSha256": "77c6dde017a55801293810c52f6a0d771ff1159930a5cbacc34a5438bcf4b30a",
+    "bytes": 22951995,
     "baselineTotalVariables": 292890231905,
     "totalVariables": 211983774909,
     "variablesRemoved": 80906456996,
@@ -203,7 +203,7 @@
     "arithmeticTheoremProved": false
   },
   "bounds": {
-    "candidate_sha256": "c5548922bd76fcedd096526447dc8a1bde8cdaa8ccc55772f7114c9f62b6ab7a",
+    "candidate_sha256": "77c6dde017a55801293810c52f6a0d771ff1159930a5cbacc34a5438bcf4b30a",
     "total_variables": 211983774909,
     "rational_witnesses": 211983774908,
     "templates": [
@@ -364,7 +364,7 @@
     "degree_bound": "B^2048",
     "largest_absolute_coefficient_bound": "2^(B^2048)",
     "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
-    "simplified_B": "T+1, by the companion proof and the literal digit checks",
+    "simplified_B": "T_optimized+1, by cutoff.md, the companion proof and the literal digit checks",
     "max_fixed_literal_decimal_digits": 3181317,
     "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
     "guard_log2_l1_bound": "2^39*(T+1)^5",
@@ -372,7 +372,7 @@
   },
   "degrees": {
     "coefficient_order": "constant, T, T^2, ...",
-    "domain": "the prescribed fixed T (in particular T>=1)",
+    "domain": "Each column uses its own prescribed cutoff: T_dated or T_optimized (both >=1)",
     "baseline": {
       "root": [
         8754752,
@@ -638,7 +638,7 @@
         ]
       }
     },
-    "premise": "The manuscript's fixed-index and cutoff estimates, verified constructor shapes, and degree substitution inequality; see README.md."
+    "premise": "The manuscript's fixed-index estimates, cutoff.md for the smaller optimized cutoff, verified constructor shapes, and degree substitution inequality; see README.md."
   },
   "verification": {
     "passed": true,
@@ -677,6 +677,28 @@
     },
     "bundleMutations": {
       "rejected": 3
+    },
+    "cutoff": {
+      "level": {
+        "ringSize": 81,
+        "unitCount": 72,
+        "normOneCount": 36,
+        "effectiveLevelIndexBound": 36,
+        "effectiveNormalizerIndexBound": 144
+      },
+      "splittingFieldBound": "144!",
+      "homFieldBound": "2*F*51840^(F-1)",
+      "factorialBits": 830,
+      "modulusBits": 435,
+      "symplecticGroupOrder": 51840,
+      "bmorParameter": 2,
+      "cutoffTripleTowerUpperExponent": {
+        "dated": 9013,
+        "factorialOnly": 3331,
+        "structural": 837
+      },
+      "constantMutationsRejected": 9,
+      "scope": "Exact finite consequences of cutoff.md; geometric field arguments are not machine formalized"
     },
     "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
   }
