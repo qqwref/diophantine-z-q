@@ -83,19 +83,19 @@ The root-level TeX source is the reviewed revision of the 11/5 manuscript; the m
 ## Reproducible checks
 
 An [optimized construction](construction/optimized/README.md) preserves the dated
-artifacts and provides a separately reproducible equivalent specification with
+artifacts and provides a separately reproducible specification with
 211,983,774,909 total variables (27.62% fewer). It simplifies constant arithmetic,
 uses three squares for nonnegativity, and replaces the cubic-size finite exclusion
 product with an interpolation guard using the same one witness. The
-[smaller-cutoff supplement](construction/optimized/cutoff.md) reduces the
-field-degree bound to D=144, uses its full three-torsion marking and sharper
-prime-support estimates, and reduces the cutoff bound from
-`2^(2^(2^9013))` to `2^(2^44)`, without adding variables. A
-[smaller catalogue](construction/optimized/prime-catalogue.md) uses W=185640
-and has an exactly computed maximum H=23150593. The curve structure and an
-elementary primorial bound give R=H and Q=4^(866H). The accompanying
-notes prove the interface equivalences and give degree and coefficient bounds;
-these changes inherit the original construction's arithmetic inputs. Run
+[current height supplement](construction/optimized/height-refinements.md) uses
+D=144, a [reserve catalogue](construction/optimized/prime-catalogue.md) with
+W=56 and exact maximum H=10321, separate local conductor exponents, and a sharper
+CM and modular-height analysis. Its cutoff satisfies T<2^6450000 and has exactly
+1,940,959 decimal digits, down from about 2.67 trillion in the preceding optimized
+version. No additional variables are introduced. The size checkers separately
+bound the larger fixed scalars by U=2^32000000; they no longer claim B=T+1.
+The notes identify the arithmetic inputs, new published class-number input and
+limits of the finite checks. Run
 `python scripts/check_optimized_construction.py --output build/optimized` to
 generate its expression and verify the pinned reports. CI runs both constructions.
 

@@ -2,8 +2,8 @@
   "build": {
     "passed": true,
     "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
-    "optimizedPolynomialSha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
-    "bytes": 22951632,
+    "optimizedPolynomialSha256": "d3cba4e8ea25629fa62530f9a7a0e177e5aac58d9cdb05fb64fc5abbe922acce",
+    "bytes": 22951433,
     "baselineTotalVariables": 292890231905,
     "totalVariables": 211983774909,
     "variablesRemoved": 80906456996,
@@ -203,7 +203,7 @@
     "arithmeticTheoremProved": false
   },
   "bounds": {
-    "candidate_sha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
+    "candidate_sha256": "d3cba4e8ea25629fa62530f9a7a0e177e5aac58d9cdb05fb64fc5abbe922acce",
     "total_variables": 211983774909,
     "rational_witnesses": 211983774908,
     "templates": [
@@ -364,15 +364,18 @@
     "degree_bound": "B^2048",
     "largest_absolute_coefficient_bound": "2^(B^2048)",
     "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
-    "simplified_B": "T_optimized+1, by cutoff.md, the companion proof and the literal digit checks",
+    "simplified_B": "U=2^32000000 bounds B, by height-refinements.md and the literal digit checks",
     "max_fixed_literal_decimal_digits": 3181317,
+    "uniform_log2_B_upper_bound": 32000000,
+    "absolute_degree_bound": "2^32000016 (using the separate degree traversal)",
+    "absolute_coefficient_bound": "2^(2^65536000000)",
     "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
     "guard_log2_l1_bound": "2^39*(T+1)^5",
-    "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Inherits baseline arithmetic assumptions."
+    "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Uses baseline arithmetic assumptions and documented height refinements."
   },
   "degrees": {
-    "coefficient_order": "constant, T, T^2, ...",
-    "domain": "Each column uses its own prescribed cutoff: T_dated or T_optimized (both >=1)",
+    "coefficient_order": "constant, X, X^2, ...",
+    "domain": "Baseline X=T_dated; optimized X=U=2^32000000, which bounds T_optimized and all scalar constructor degrees",
     "baseline": {
       "root": [
         8754752,
@@ -638,7 +641,7 @@
         ]
       }
     },
-    "premise": "The manuscript's fixed-index estimates, cutoff.md for the smaller optimized cutoff, verified constructor shapes, and degree substitution inequality; see README.md."
+    "premise": "The manuscript's fixed-index estimates, height-refinements.md for optimized T and the separate scalar bound U, verified constructor shapes, and degree substitution inequality; see README.md."
   },
   "verification": {
     "passed": true,
@@ -724,21 +727,60 @@
       "splittingFieldBound": 144,
       "homFieldBound": 144,
       "fiveTorsionExtensionBound": 480,
-      "absoluteUpperBreakBound": 432,
-      "conductorExponentBound": 866,
+      "upperBreakBounds": {
+        "KAtTwo": 8,
+        "fiveTorsionAtThree": 4.5,
+        "betaAtTwo": 11
+      },
+      "conductorExponentBounds": {
+        "two": 24,
+        "three": 11,
+        "other": 2
+      },
+      "cm": {
+        "classNumberBound": 72,
+        "fundamentalDiscriminantBound": 3000000,
+        "orderConductorBound": 93312,
+        "ellipticHeightBound": 100000000,
+        "surfaceHeightBound": 210000000
+      },
       "catalogue": {
-        "modulus": 185640,
-        "unitClasses": 36864,
-        "primesPerClass": 22,
+        "modulus": 56,
+        "unitClasses": 24,
+        "primesPerClass": 45,
         "floor": 324,
-        "size": 811008,
-        "maximum": 23150593,
-        "lastResidue": 131233,
-        "sha256AscendingUint32LE": "70dc6d12c8ddbed7a5fa1f8f00ce2a6df2b781fe2888a95306e7141ae72b4d4b",
-        "verification": "Complete Eratosthenes sieve and first-22 count in every unit class"
+        "size": 1080,
+        "maximum": 10321,
+        "lastResidue": 17,
+        "reservePrimes": [
+          5,
+          13,
+          17
+        ],
+        "reserveMinimum": 22,
+        "reserveCases": 18432,
+        "worstCase": {
+          "residue": 5,
+          "excluded": [
+            1,
+            2,
+            14
+          ]
+        },
+        "sha256AscendingUint32LE": "7ae699e02f108589a12ceab58a0c579ca1170e10a024921d51a32ff0bccdb81d",
+        "verification": "Complete Eratosthenes sieve and first-45 count in every unit class"
       },
       "residues": {
         "exceptions": [
+          {
+            "prime": 5,
+            "allowedSlopes": [
+              2,
+              3,
+              4
+            ],
+            "tripleSumSize": 5
+          },
           {
             "prime": 11,
             "allowedSlopes": [
@@ -748,6 +790,34 @@
               10
             ],
             "tripleSumSize": 11
+          },
+          {
+            "prime": 13,
+            "allowedSlopes": [
+              3,
+              4,
+              7,
+              8,
+              10,
+              12
+            ],
+            "tripleSumSize": 13
+          },
+          {
+            "prime": 17,
+            "allowedSlopes": [
+              3,
+              5,
+              6,
+              7,
+              9,
+              11,
+              12,
+              13,
+              15,
+              16
+            ],
+            "tripleSumSize": 17
           },
           {
             "prime": 19,
@@ -770,13 +840,14 @@
         ],
         "cauchyDavenportThreshold": 23,
         "forbiddenPerSlope": 14,
-        "retainedPrimes": [
+        "valuationPrimes": [
           2,
           3,
-          5,
-          7,
-          13,
-          17
+          7
+        ],
+        "prescribedResiduePrimes": [
+          2,
+          7
         ]
       },
       "reductionOrders": {
@@ -1001,14 +1072,18 @@
         "scope": "Exact point counts through p=101; the general CM proof is in cutoff.md"
       },
       "primeSupportBound": "Hmax",
-      "heightBase": "4^(866*Hmax)",
+      "heightBase": "2^24 * 3^11 * 4^(2*Hmax)",
+      "nonCmHeightBound": "14000000 * Q^12 * M^24",
       "cutoff": {
-        "formula": "(96*10^13)^13 * 2^8861398783796",
-        "upperBound": "2^(2^44)",
-        "previousUpperBound": "2^(2^(2^242))"
+        "formula": "(1344*10^19)^13 * 2^6444048 * 3^1716",
+        "upperBound": "2^6450000",
+        "bits": 6447724,
+        "decimalDigits": 1940959,
+        "previousUpperBound": "2^(2^44)"
       },
-      "constantMutationsRejected": 16,
-      "scope": "Exact finite consequences of cutoff.md; geometric, formal-group and prime-pattern arguments are not machine formalized"
+      "uniformAnalysisBound": "U=2^32000000; not T+1",
+      "constantMutationsRejected": 22,
+      "scope": "Exact finite consequences of height-refinements.md; geometric, formal-group and prime-pattern arguments are not machine formalized"
     },
     "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
   }

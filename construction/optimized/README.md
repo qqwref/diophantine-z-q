@@ -27,7 +27,7 @@ node construction/optimized/verify.js
 
 ## Results and scope
 
-| Quantity | Dated construction | Optimized construction |
+| Quantity | Dated construction | Current optimized construction |
 | --- | ---: | ---: |
 | Total rational variables, including input | 292,890,231,905 | 211,983,774,909 |
 | Natural-predicate private witnesses | 140,604 | 105,504 |
@@ -35,54 +35,65 @@ node construction/optimized/verify.js
 | Multiplication private witnesses | 35,134 | 35,134 |
 | Finite guard private witnesses | 1 | 1 |
 | Field-degree bound D | `324!*3^(256*(324!)^4)` | 144 |
-| Catalogue modulus W | about `7.7*10^130` | 185,640 |
-| Catalogue size | about `1.6*10^131` | 811,008 |
-| Catalogue maximum H | bounded by a uniform progression estimate | 23,150,593 (exact) |
-| Cutoff upper bound | `2^(2^(2^9013))` | `2^(2^44)` |
+| Catalogue modulus W | about `7.7*10^130` | 56 |
+| Catalogue size | about `1.6*10^131` | 1,080 |
+| Catalogue maximum H | uniform progression bound | 10,321 (exact) |
+| Cutoff upper bound | `2^(2^(2^9013))` | `2^6450000` |
 | Source precision polynomial | Same pinned input | Same pinned input |
 
-The reduction is 80,906,456,996 variables (27.6235%). The existing simultaneous
-majorants `degree <= (T+1)^2048` and `coefficient magnitude <= 2^((T+1)^2048)`
-still apply. A separate degree traversal proves the sharper majorants
+The reduction is 80,906,456,996 variables (27.6235%). The finite guard
+reduces construction work, degree and coefficient-norm bounds using the same
+one witness. No quartic conversion or three-copy multiplication correction
+is used.
+
+The current cutoff is the explicit integer
+
+`T=(1344*10^19)^13 * 2^6444048 * 3^1716`.
+
+It has 6,447,724 binary digits and 1,940,959 decimal digits. Both lengths and
+its equality with the fixed-expression prescription are checked exactly.
+The preceding merged version had W=185640, H=23150593 and a cutoff with
+about 2.67 trillion decimal digits. The current improvements add no variables.
+
+**T no longer bounds every fixed scalar.** A scalar in the original precision
+source has 3,181,317 decimal digits. The checkers now explicitly use an
+analysis bound `U=2^32000000` for the fixed scalars, division-polynomial
+constructor degrees and T. It is not added to the polynomial as a coefficient.
+The syntax-height bound 256 and degree traversal give
 
 \[
-\begin{aligned}
-\deg P_{\rm dated}&\le110592T_{\rm dated}^3+32768T_{\rm dated}+8754752,\\
-\deg P_{\rm optimized}&\le32768T_{\rm optimized}+8754752.
-\end{aligned}
+\deg P\le32768U+8754752<2^{32000016},\qquad
+|[X^\alpha]P|\le2^{U^{2048}}=2^{2^{65536000000}}.
 \]
 
-These are upper bounds, not exact degrees or claims of essential variables.
-The finite guard improves its degree, coefficient-norm majorant and finite
-construction work without increasing its witness count. No quartic conversion
-or three-copy multiplication correction is used.
+These are overall upper bounds, not exact degrees or claims of essential
+variables. The interpolation guard itself still has degree at most 12T+3.
+Large scalar constructors now dominate the reported overall degree bound;
+reducing only T further would not improve that part of the construction.
 
-The optimized constants use `F=D=144`, `G0=480`, `E0=866`, `W=185640`,
-`R=max(D,Hmax)` and `Q=4^(R*E0)`. The Q-defined transitive normalizer action
-removes the fibre-field factorial; the full three-marking already defines
-all conjugacy Hom groups. The quaternionic action and normality sharpen
-the torsion and conductor estimates.
+The constants use F=D=144, G0=480, W=56, E0=24, R=H and
+`Q=2^24*3^11*4^(2H)`. The [reserve-catalogue proof](prime-catalogue.md)
+uses 45 primes per class and an exhaustively checked availability property
+to avoid imposing congruences at most small primes. The 24 unit classes
+supply only 1080 catalogue primes. P0 still contains all primes through 324.
 
-The [smaller-catalogue proof](prime-catalogue.md) handles most small primes
-by residue choices instead of catalogue classes. A complete sieve computes
-its maximum H=23150593. The special elliptic curve's reduction orders have
-no prime factors exceeding the underlying prime, so the least formal
-multiplier has prime support at most H. The elementary primorial bound
-`product(p<=R)p < 4^R` then improves Q. Full field and height proofs are in
-[cutoff.md](cutoff.md). Together they give the explicit cutoff
+The [current height proof](height-refinements.md) charges conductor exponents
+24 at two, 11 at three, and at most two elsewhere. It applies Watkins's
+unconditional class-number classification to the CM fibres and retains
+the sharper genus bound in the modular-Jacobian transfer. The resulting
+non-CM height estimate is `14000000*Q^12*M^24`, replacing `Q^17*M^24`.
+The local logarithm precision and cutoff formula `T=(48*Aheight)^13` stay
+unchanged. M, cstar and ell retain their formulas with the smaller catalogue.
 
-`T=(96*10^13)^13 * 2^8861398783796 < 2^(2^44)`.
+The field/Hom and CM reduction-order arguments are in the now historical
+[cutoff.md](cutoff.md). The first factorial-based optimization is preserved
+in [cutoff-previous.md](cutoff-previous.md). Git history records the numerical
+prescriptions between these versions.
 
-The definitions of M, cstar, ell, and `T=(48*Aheight)^13` retain their formulas,
-evaluated with the new catalogue and height constants. P0 still includes all
-primes through 324. No variables or fixed-expression operators are added.
-The previous `F=144!` optimization is recorded in
-[cutoff-previous.md](cutoff-previous.md).
-
-The changes below preserve the existential projection, assuming the same
-integer-index model and arithmetic predicates used by the dated construction.
-The checks do not establish the original height, pole-completeness or global
-Diophantine theorem. They also do not evaluate the actual astronomical cutoff.
+These changes use the manuscript's arithmetic framework and the additional
+published results and arguments identified in the supplements. The finite
+checks do not independently establish the original global theorem, nor do
+they reproduce Watkins's proof of completeness of his classification.
 
 ## Constant arithmetic
 
@@ -231,30 +242,31 @@ guard majorant was `2^39(T+1)^6`. This improves the coefficient-norm upper
 bound as well as degree, with no extra variables. It does not assert that
 each individual coefficient is smaller than a corresponding old coefficient.
 
-For the prescribed enormous T, `B=T+1>=2^20`, both the new guard degree and
-log norm fit the old constructor majorants `B^4` and `B^8`. The new rational
-coordinates of `[3]P0` and their denominators satisfy the checked literal
-size bound, hence are below T by [cutoff.md](cutoff.md).
-The maximum defining B is still T+1, now using the smaller optimized T.
-`bounds.py` accounts for negation and the new constructor and verifies the
-same root-height majorant 256. It uses height four, rather than two, for the
-standalone generator and root equations, as clarified in the manuscript.
+For the current prescription, [height-refinements.md](height-refinements.md)
+proves T+1<U=2^32000000 and bounds all the fixed coefficients and occurring
+scalar constructor degrees by U. The guard's degree and log norm therefore
+fit the same constructor majorants U^4 and U^8. The wrapper coordinates also
+satisfy the checked literal bound. `bounds.py` traverses the actual expression
+and verifies the unchanged root-height majorant 256, now using B<=U rather
+than incorrectly retaining B=T+1. Standalone generator and root equations
+have height four, as in the preceding optimized version.
 
-The sharper degree calculation in `degrees.py` uses different scalar bounds
-for the two prescriptions. The dated construction has `R=D` and scalar
-indices at most `2D+1`, yielding `deg psi_j <=128D^3<T_dated`. The optimized
-construction has `D=144` and `R=Hmax`; cstar and the extra literals need
-not be below D or R. Section 6 of [cutoff.md](cutoff.md) instead bounds
-`cstar<=Hmax^(230W)` and separately uses the checked literal-digit bound to
-prove `deg psi_j<T_optimized` for every occurring index.
-The traversal verifies those index shapes. It assigns degree majorants T to
-division-polynomial constructors, `54T^3` to the old guard product, and
-`12T+3` to the new guard constructor. Addition takes a coefficientwise maximum
-of majorants, multiplication adds degrees, and substitution multiplies degree
-bounds, including degree-one private witnesses. Conjunctive recipes double
-the maximum degree; product recipes add the degrees. All coefficients in
-these majorants are nonnegative. The recorded root bounds follow without
-expanding the astronomical constants or monomials.
+`degrees.py` verifies that scalar indices have the prescribed shapes n,n+1,
+n-1,2n, where n is cstar or a positive extra scalar. The dated column uses
+its original T_dated; the optimized column uses U, including T<=U for the
+guard. The resulting majorants are
+
+\[
+\begin{aligned}
+\deg P_{\rm dated}&\le110592T_{\rm dated}^3+32768T_{\rm dated}+8754752,\\
+\deg P_{\rm optimized}&\le32768U+8754752.
+\end{aligned}
+\]
+
+Addition takes a coefficientwise maximum of majorants, multiplication adds
+degrees, and substitution multiplies degree bounds, including degree-one
+private witnesses. Conjunctive recipes double the maximum degree; product
+recipes add the degrees. This does not expand the full polynomial.
 
 ## Verification and provenance
 
@@ -272,13 +284,13 @@ cutoff bindings and the shared shift.
 
 `verify-cutoff.js`, included in the same suite, rechecks the finite level
 group, branch discriminants, transitive centralizer examples, formal-depth
-fixtures, GL2(F5) count, conductor arithmetic and cutoff inequalities.
+fixtures, GL2(F5) count, local conductor bounds, CM inequalities, the refined height transfer,
+exact binary cutoff and separate scalar bounds.
 It also runs the complete catalogue sieve and residue-sum checks in
 `prime-catalogue.js`, and exact small-field point counts in
-`verify-reduction-orders.js`. It rejects altered W, F, D, G0, E0, T, R, Q
-and catalogue/multiplier bindings.
-These are finite checks of the proofs in `cutoff.md`; they do not constitute
-machine verification of the geometric or Galois arguments.
+`verify-reduction-orders.js`. It rejects altered constants and catalogue/multiplier bindings.
+These are finite checks accompanying `height-refinements.md`; they do not constitute
+machine verification of the geometric, Galois or class-number arguments.
 
 `build.js` checks the original expression and precision input hashes, performs
 the optimized translation, and reconstructs the five outer compositions from

@@ -1,7 +1,8 @@
-"""Compare polynomial degree majorants as polynomials in the fixed cutoff T.
+"""Compare degree majorants in the dated cutoff T and optimized bound U.
 
 No expansion or numerical evaluation of T is performed. See README.md for the
-bound deg(psi_n)<=T for the particular fixed scalar indices in these artifacts.
+dated bound deg(psi_n)<=T and optimized bound deg(psi_n)<=U=2^32000000.
+The optimized guard uses its smaller T<=U; no scalar<=T claim is made.
 """
 import json
 from pathlib import Path
@@ -31,7 +32,7 @@ def multiply(a, b):
 
 def verify_index(expr, constants):
     # Exactly n,n+1,n-1,2n, with n=cstar or a positive extra scalar.
-    # cutoff.md proves the degree bound separately for these two cases;
+    # height-refinements.md proves the bound U separately for these two cases;
     # the optimized constants no longer satisfy cstar<=D or R=D.
     if expr[0] == "ref":
         if expr[1] == "cstar":
@@ -39,7 +40,7 @@ def verify_index(expr, constants):
         value = constants[expr[1]]
         assert expr[1].startswith("integer_constant_")
         assert value[0] == "literal" and value[1].isdigit()
-        assert len(value[1]) < 5_000_000
+        assert len(value[1]) < 3_190_000
     elif expr[0] == "add":
         verify_index(expr[1], constants)
         assert expr[1][0] == "ref" and expr[2] in (["literal", "1"], ["literal", "-1"])
@@ -116,10 +117,10 @@ if __name__ == "__main__":
     output = Path(sys.argv[1])
     baseline = json.loads((Path(__file__).resolve().parents[1] / "ordinary-integer-definition.json").read_text())
     optimized = json.loads((output / "ordinary-integer-definition.json").read_text())
-    result = {"coefficient_order": "constant, T, T^2, ...", "domain": "Each column uses its own prescribed cutoff: T_dated or T_optimized (both >=1)",
+    result = {"coefficient_order": "constant, X, X^2, ...", "domain": "Baseline X=T_dated; optimized X=U=2^32000000, which bounds T_optimized and all scalar constructor degrees",
               "baseline": bound(baseline), "optimized": bound(optimized),
-              "premise": "The manuscript's fixed-index estimates, cutoff.md for the smaller optimized cutoff, verified constructor shapes, and degree substitution inequality; see README.md."}
-    assert len(result["optimized"]["root"]) == 2, "Expected a linear majorant in T"
+              "premise": "The manuscript's fixed-index estimates, height-refinements.md for optimized T and the separate scalar bound U, verified constructor shapes, and degree substitution inequality; see README.md."}
+    assert len(result["optimized"]["root"]) == 2, "Expected a linear majorant in U"
     (output / "degree-comparison.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({"passed": True, "baseline": result["baseline"]["root"],
                       "optimized": result["optimized"]["root"]}))

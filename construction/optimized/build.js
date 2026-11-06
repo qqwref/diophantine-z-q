@@ -51,7 +51,7 @@ function build() {
     recipe.format = old.format; recipes[name] = recipe;
   }
   const bundle = {...baseline, format: "optimized-ordinary-integer-polynomial-expression-v1",
-    status: "Equivalent construction subject to the same arithmetic inputs as the dated baseline; see optimized/README.md.",
+    status: "Optimized construction under the stated arithmetic inputs and refinements; see optimized/README.md.",
     witnessCount: recipes.integers.witnessCount, definitions: optimizedDefinitions(),
     library: finiteArtifact(library, translator.extraConstants, {meaning: "Three-square natural predicate and interpolation guard"}),
     recipes, baselinePolynomialSha256: manifest.polynomial_sha256};

@@ -27,7 +27,7 @@ def main():
     for expr in library["fixedConstants"].values():
         fixed_literals(expr)
     max_fixed_digits = max(map(len, literals))
-    assert max_fixed_digits < 5_000_000  # fewer than 20 million binary digits
+    assert max_fixed_digits < 3_190_000  # permits a 32-million-bit uniform constructor bound
     assert len(library["fixedConstants"]["W"][1]) < 250
     # A template of height h satisfies degree <= B^(8h) and
     # log2(max(1, coefficient_l1_norm)) <= B^(8h).
@@ -44,7 +44,7 @@ def main():
                 h = 0
             elif op == "const":
                 int(args[0])
-                assert len(args[0].lstrip("-")) < 5_000_000
+                assert len(args[0].lstrip("-")) < 3_190_000
                 const_count += 1
                 h = 1
             elif op in ("add", "mul"):
@@ -122,11 +122,14 @@ def main():
         "degree_bound": f"B^{8 * height}",
         "largest_absolute_coefficient_bound": f"2^(B^{8 * height})",
         "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
-        "simplified_B": "T_optimized+1, by cutoff.md, the companion proof and the literal digit checks",
+        "simplified_B": "U=2^32000000 bounds B, by height-refinements.md and the literal digit checks",
         "max_fixed_literal_decimal_digits": max_fixed_digits,
+        "uniform_log2_B_upper_bound": 32_000_000,
+        "absolute_degree_bound": "2^32000016 (using the separate degree traversal)",
+        "absolute_coefficient_bound": "2^(2^65536000000)",
         "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
         "guard_log2_l1_bound": "2^39*(T+1)^5",
-        "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Inherits baseline arithmetic assumptions."
+        "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Uses baseline arithmetic assumptions and documented height refinements."
     }
     target = ROOT / "ordinary-integer-polynomial-size-bounds.json"
     target.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

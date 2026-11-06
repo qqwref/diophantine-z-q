@@ -34,7 +34,7 @@ function addThreeSquareNatural(library) {
 
 function buildOptimizedModel({interpolation = true} = {}) {
   const library = buildFiniteModel();
-  library.templates[library.id("multiply")].metadata.fixedConstantBinding = "optimizedFixedDefinitions-v4";
+  library.templates[library.id("multiply")].metadata.fixedConstantBinding = "optimizedFixedDefinitions-v5";
   if (library.templates.at(-1).name !== "natural") throw Error("Baseline model order changed");
   library.templates.pop(); library.names.delete("natural");
   if (interpolation) {
