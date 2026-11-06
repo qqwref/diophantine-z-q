@@ -23,6 +23,7 @@ function arithmeticPlan(source, node, points) {
     const x = twice === 0 ? b : a;
     return {kind: 0, inputs: [x, x]};
   }
+  if (a === b) return {kind: 4, inputs: [a]};
   return {kind: 1, inputs: [a, b]};
 }
 
@@ -34,7 +35,7 @@ class Translator extends BaselineTranslator {
     const sourceVariables = [], varRefs = new Map(), sourceNodePoints = [], operations = [];
     const constantDefinitions = [], constantRefs = new Map();
     const operationTemplates = {natural: this.library.id("natural"), addition: this.library.id("raw_add"),
-      multiplication: this.library.id("multiply"), negation: this.library.id("raw_negate"),
+      multiplication: this.library.id("multiply"), square: this.library.id("square"), negation: this.library.id("raw_negate"),
       power: powerRecipe ? powerRecipe.name : null};
     const explicit = source.variables || Array.from({length: source.variableCount}, (_, index) =>
       ({index, kind: index < sourceInputCount ? "input" : "witness"}));
@@ -69,7 +70,7 @@ class Translator extends BaselineTranslator {
         if (plan.alias !== undefined) out = plan.alias;
         else {
           out = allocation.take(5);
-          const target = plan.kind === 0 ? "raw_add" : plan.kind === 1 ? "multiply" : "raw_negate";
+          const target = plan.kind === 0 ? "raw_add" : plan.kind === 1 ? "multiply" : plan.kind === 4 ? "square" : "raw_negate";
           const start = allocation.take(this.witnesses(target));
           operations.push([plan.kind, i, ...plan.inputs, out, start]);
         }
@@ -97,8 +98,9 @@ function optimizedDefinitions() {
   definitions.expressionSemantics = "All variables range over Q. Literal polynomial substitution with disjoint private witness blocks. Model recipes and conjunctive compositions sum squares; product compositions multiply. Root integers has one free input t.";
   definitions.rootVariableOrdering = "Root variable 0 is the rational input t; all remaining root variables are existential rational witnesses.";
   definitions.modelRecordEncoding.operation3 = "[3,source node,input point,output point,witnessStart] calls operationTemplates.negation on the two point codes; that template has zero private witnesses.";
+  definitions.modelRecordEncoding.operation4 = "[4,source node,input point,output point,witnessStart] calls operationTemplates.square; both source operands must denote the same point code.";
   definitions.modelRecordEncoding.aliases = "An arithmetic source node omitted from operations is an alias certified by the source audit. sourceNodePoints is diagnostic and contributes no equations. All allocated operation records remain conjuncts.";
-  definitions.modelRecipeConstraints = "The three generator equations, all recorded natural/scalar/add/multiply/power/negate calls, and the five root differences are individually squared and summed. Operation tags are 0=add, 1=multiply, 2=power-value, 3=negate.";
+  definitions.modelRecipeConstraints = "The three generator equations, all recorded natural/scalar/add/multiply/square/power/negate calls, and the five root differences are individually squared and summed. Operation tags are 0=add, 1=multiply, 2=power-value, 3=negate, 4=square.";
   definitions.finiteGuardInterpolation = {
     binding: "args=[fixed cutoff expression, fifteen coordinate node indices, inverse-witness node index]",
     distance: "For each -T<=n<=T, write iota(n)_j=A_nj/B_nj in reduced form, B_nj>0. D_n=product_j B_nj; d_n(X)=sum_j(D_n X_j-(D_n/B_nj)A_nj)^2.",

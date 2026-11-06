@@ -10,6 +10,7 @@ const {buildOptimizedModel, auditOptimizedLibrary} = require("./model.js");
 const {Translator} = require("./translator.js");
 const {auditEvaluation, auditBundle} = require("./audit.js");
 const {build} = require("./build.js");
+const {verifyProgramFixtures, verifySquareStructure} = require("./verify-program-and-square.js");
 const {verifyCutoff} = require("./verify-cutoff.js");
 const {optimizedFixedDefinitions} = require("./constants.js");
 
@@ -102,7 +103,7 @@ function verifyArithmetic() {
         n.op === "add" ? values[n.args[0]] + values[n.args[1]] : values[n.args[0]] * values[n.args[1]]);
       const row = operations.get(i);
       if (row) {
-        const a = pointLabels.get(row[2]), value = row[0] === 3 ? -a :
+        const a = pointLabels.get(row[2]), value = row[0] === 3 ? -a : row[0] === 4 ? a * a :
           row[0] === 0 ? a + pointLabels.get(row[3]) : a * pointLabels.get(row[3]);
         pointLabels.set(row.at(-2), value);
       }
@@ -127,7 +128,8 @@ function verifyArithmetic() {
   reject(r => { r.rootEquality[0] = -1; });
   reject(r => { r.sourceNodePoints[0] = -1; });
   reject(r => { r.operations.push(r.operations[0]); });
-  return {cases, negateRejections, mutationsRejected: 5};
+  reject(r => { r.operations.find(row => row[0] === 4)[0] = 3; });
+  return {cases, negateRejections, mutationsRejected: 6};
 }
 
 function threeSquares(n) {
@@ -142,7 +144,7 @@ function threeSquares(n) {
 function verifyNatural() {
   for (let n = -100; n <= 1000; n++) assert.equal(threeSquares(n) !== null, n >= 0);
   const library = buildOptimizedModel(), t = library.templates[library.id("natural")];
-  assert.equal(t.witnessCount, 105504);
+  assert.equal(t.witnessCount, 70380);
   let cases = 0, changedInputsRejected = 0;
   // Verify the wrapper in the exact integer-index model. Calls to established
   // member/add/multiply predicates are contract oracles, not global proofs.
@@ -155,7 +157,7 @@ function verifyNatural() {
     const name = library.templates[id].name;
     if (name === "member") return q(0);
     if (name === "raw_add") return q(labels[0] + labels[1] === labels[2] ? 0 : 1);
-    if (name === "multiply") return q(labels[0] * labels[1] === labels[2] ? 0 : 1);
+    if (name === "square") return q(labels[0] ** 2 === labels[1] ? 0 : 1);
     throw Error("Unexpected natural call");
   };
   encode(3);
@@ -197,7 +199,7 @@ function verifyBundleMutations() {
 }
 
 function verify() {
-  return {passed: true, guards: verifyGuards(), arithmetic: verifyArithmetic(),
+  return {passed: true, programFixtures: verifyProgramFixtures(), squareStructure: verifySquareStructure(), guards: verifyGuards(), arithmetic: verifyArithmetic(),
     natural: verifyNatural(), bundleMutations: verifyBundleMutations(),
     cutoff: verifyCutoff(),
     scope: "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"};

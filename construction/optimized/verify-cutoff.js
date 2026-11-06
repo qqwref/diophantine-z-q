@@ -102,11 +102,12 @@ function verifyCutoff() {
   assert.equal(393216n+73728n, 466944n);
   assert(466944n < 2n**20n);
 
-  const uniformBits = 32000000n;
+  const uniformBits = 20000000n;
   assert.equal(14n*(66n+N), 16044n);
   assert(7n+3n*(2n+10n*16044n) < uniformBits);
   assert(4n+14n*(2916n*66n+732n*N) < uniformBits); // ell, not necessarily <T
-  assert(30n*((3190000n+2n)/3n)+7n < uniformBits); // scalar constructor degrees
+  assert(10n**1000n < 2n**3322n);
+  assert(3n*3322n*((1922000n+999n)/1000n)+7n < uniformBits); // scalar constructor degrees
   assert(1344n*10n**19n < 2n**74n);
   assert.equal(156n*(24n+4n*H), 6444048n);
   assert.equal(156n*11n, 1716n);
@@ -157,7 +158,7 @@ function verifyCutoff() {
     nonCmHeightBound: "14000000 * Q^12 * M^24",
     cutoff: {formula: "(1344*10^19)^13 * 2^6444048 * 3^1716", upperBound: "2^6450000",
       bits: cutoffBits, decimalDigits: 1940959, previousUpperBound: "2^(2^44)"},
-    uniformAnalysisBound: "U=2^32000000; not T+1",
+    uniformAnalysisBound: "U=2^20000000; not T+1",
     constantMutationsRejected: rejected,
     scope: "Exact finite consequences of height-refinements.md; geometric, formal-group and prime-pattern arguments are not machine formalized"};
 }

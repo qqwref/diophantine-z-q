@@ -2,12 +2,13 @@
 
 const assert = require("node:assert/strict");
 const {checkCoverage, auditComposition} = require("../audit-rational-expression.js");
+const {optimizedSource} = require("./program-scalar.js");
 const {hash} = require("../rational-circuit-translator.js");
 const {auditOptimizedLibrary} = require("./model.js");
 const {optimizedDefinitions} = require("./translator.js");
 const integer = n => Number.isSafeInteger(n) && n >= 0;
 
-// This audit walks the pinned source, independently of translator allocation.
+// This audit walks the transformed source, independently of translator allocation.
 function auditEvaluation(bundle, recipe, source, {inputs, naturalInputs, mode}) {
   const r = recipe, ts = bundle.library.templates, table = r.operationTemplates;
   assert.equal(r.format, "model-evaluation-polynomial-recipe-v2");
@@ -17,7 +18,7 @@ function auditEvaluation(bundle, recipe, source, {inputs, naturalInputs, mode}) 
   assert.equal(r.sourceVariableCount, source.variableCount);
   assert.equal(r.witnessCount, r.variableCount - r.parameterCount);
   for (const [key, name] of Object.entries({natural: "natural", addition: "raw_add",
-    multiplication: "multiply", negation: "raw_negate"})) assert.equal(ts[table[key]]?.name, name);
+    multiplication: "multiply", square: "square", negation: "raw_negate"})) assert.equal(ts[table[key]]?.name, name);
   assert.equal(ts[table.negation].witnessCount, 0);
   const power = table.power === null ? null : bundle.recipes[table.power];
   assert.equal(!!power, !!source.witnessBlocks?.length);
@@ -53,7 +54,7 @@ function auditEvaluation(bundle, recipe, source, {inputs, naturalInputs, mode}) 
   }
   const operations = new Map();
   for (const row of r.operations) {
-    assert([0, 1, 2, 3].includes(row[0]) && integer(row[1]));
+    assert([0, 1, 2, 3, 4].includes(row[0]) && integer(row[1]));
     assert(!operations.has(row[1])); operations.set(row[1], row);
   }
   assert.equal(r.sourceNodePoints.length, source.nodes.length);
@@ -79,11 +80,12 @@ function auditEvaluation(bundle, recipe, source, {inputs, naturalInputs, mode}) 
       else {
         const isTwo = j => source.nodes[j].op === "const" && source.nodes[j].args[0] === "2";
         if (n.args.some(isTwo)) { const x = isTwo(n.args[0]) ? b : a; kind = 0; operands = [x, x]; }
+        else if (a === b) { kind = 4; operands = [a]; }
       }
       if (alias !== undefined) { assert(!row); assert.equal(out, alias); aliases++; continue; }
       assert(row); assert.deepEqual(row.slice(0, -2), [kind, i, ...operands]);
       assert.equal(row.at(-2), out); assert(integer(out) && integer(row.at(-1)));
-      const key = kind === 0 ? "addition" : kind === 1 ? "multiplication" : "negation";
+      const key = kind === 0 ? "addition" : kind === 1 ? "multiplication" : kind === 4 ? "square" : "negation";
       spans.push([out, 5], [row.at(-1), ts[table[key]].witnessCount]); used++;
     } else if (n.op === "call") {
       assert(power && row); assert.equal(n.args.length, 5); assert.equal(n.args[0], 0);
@@ -111,10 +113,13 @@ function auditBundle(bundle, source, baseline) {
   const library = auditOptimizedLibrary(bundle.library);
   assert.equal(library.interpolationConstructors, 1);
   assert.equal(bundle.recipes.power_value.sourceHash, hash(JSON.stringify(source.templates[0])));
-  assert.equal(bundle.recipes.precision.sourceHash, baseline.recipes.precision.sourceHash);
+  const optimized = optimizedSource(source);
+  assert.deepEqual(bundle.sourceProgramOptimization, optimized.report);
+  assert.equal(bundle.recipes.precision.sourceHash, optimized.sourceHash);
+  assert.equal(bundle.recipes.precision.sourceFile, "precision-natural-polynomial.json#optimized-program");
   const evaluations = [
     auditEvaluation(bundle, bundle.recipes.power_value, source.templates[0], {inputs: 3, naturalInputs: false, mode: "value"}),
-    auditEvaluation(bundle, bundle.recipes.precision, source, {inputs: 5, naturalInputs: true, mode: "zero"})
+    auditEvaluation(bundle, bundle.recipes.precision, optimized.source, {inputs: 5, naturalInputs: true, mode: "zero"})
   ];
   const compositions = [];
   for (const name of ["close", "main", "value_union", "value", "integers"]) {

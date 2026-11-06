@@ -2,7 +2,8 @@
 
 This is a separately reproducible version of the November 5 construction. The
 dated manuscript, saved expression, source manifest and original check suite
-are unchanged. The natural precision polynomial is the same pinned input.
+are unchanged. The optimized build starts from the pinned precision input
+and replaces its program scalar by a checked equivalent program code.
 
 Run from the repository root, with Python 3.11+ and Node.js 22+:
 
@@ -12,7 +13,7 @@ python scripts/check_optimized_construction.py --output build/optimized
 
 This generates the full finite polynomial specification, its assembly report,
 size bounds, degree comparison and finite-check report in the output directory.
-The 23 MB generated expression is not duplicated in git; `expected-checks.json`
+The 21 MB generated expression is not duplicated in git; `expected-checks.json`
 pins its exact hash and all deterministic check results. Without `--output`,
 the check uses a temporary directory. The command fails on a digest, count,
 degree-bound or finite-check mismatch. To regenerate without accepting a new
@@ -29,9 +30,10 @@ node construction/optimized/verify.js
 
 | Quantity | Dated construction | Current optimized construction |
 | --- | ---: | ---: |
-| Total rational variables, including input | 292,890,231,905 | 211,983,774,909 |
-| Natural-predicate private witnesses | 140,604 | 105,504 |
-| Power-value private witnesses | 17,786,698 | 12,870,618 |
+| Total rational variables, including input | 292,890,231,905 | 151,200,931,889 |
+| Natural-predicate private witnesses | 140,604 | 70,380 |
+| Power-value private witnesses | 17,786,698 | 9,194,306 |
+| Square private witnesses | 35,134 | 23,426 |
 | Multiplication private witnesses | 35,134 | 35,134 |
 | Finite guard private witnesses | 1 | 1 |
 | Field-degree bound D | `324!*3^(256*(324!)^4)` | 144 |
@@ -39,9 +41,9 @@ node construction/optimized/verify.js
 | Catalogue size | about `1.6*10^131` | 1,080 |
 | Catalogue maximum H | uniform progression bound | 10,321 (exact) |
 | Cutoff upper bound | `2^(2^(2^9013))` | `2^6450000` |
-| Source precision polynomial | Same pinned input | Same pinned input |
+| Precision source | Pinned release | Same circuit, equivalent compacted program code |
 
-The reduction is 80,906,456,996 variables (27.6235%). The finite guard
+The reduction is 141,689,300,016 variables (48.3762%). The finite guard
 reduces construction work, degree and coefficient-norm bounds using the same
 one witness. No quartic conversion or three-copy multiplication correction
 is used.
@@ -55,15 +57,17 @@ its equality with the fixed-expression prescription are checked exactly.
 The preceding merged version had W=185640, H=23150593 and a cutoff with
 about 2.67 trillion decimal digits. The current improvements add no variables.
 
-**T no longer bounds every fixed scalar.** A scalar in the original precision
-source has 3,181,317 decimal digits. The checkers now explicitly use an
-analysis bound `U=2^32000000` for the fixed scalars, division-polynomial
+**Separate bounds remain necessary.** The original program scalar has
+3,181,317 decimal digits. [Program compaction](program-and-square.md) reduces
+it to 1,921,733 digits, now below T. Its division polynomials and the constant
+ell still require separate bounds. The checkers use an
+analysis bound `U=2^20000000` for the fixed scalars, division-polynomial
 constructor degrees and T. It is not added to the polynomial as a coefficient.
 The syntax-height bound 256 and degree traversal give
 
 \[
-\deg P\le32768U+8754752<2^{32000016},\qquad
-|[X^\alpha]P|\le2^{U^{2048}}=2^{2^{65536000000}}.
+\deg P\le32768U+8754752<2^{20000016},\qquad
+|[X^\alpha]P|\le2^{U^{2048}}=2^{2^{40960000000}}.
 \]
 
 These are overall upper bounds, not exact degrees or claims of essential
@@ -95,6 +99,11 @@ published results and arguments identified in the supplements. The finite
 checks do not independently establish the original global theorem, nor do
 they reproduce Watkins's proof of completeness of his classification.
 
+The [program and square refinement](program-and-square.md) explains the
+checked program rewrites and shared square certificates. Relative to the
+preceding optimized version, these remove a further 60,782,843,020 variables
+and reduce the program scalar by 39.59% in decimal length.
+
 ## Constant arithmetic
 
 On canonical point codes, multiplying the integer label by -1 negates the two
@@ -113,10 +122,11 @@ no live source variable or private power block is deleted.
 
 The optimized recipe format is `model-evaluation-polynomial-recipe-v2`.
 Operation tags 0, 1 and 2 keep their original meanings; tag 3 is the negation
-call. Its record is `[3, sourceNode, inputPoint, outputPoint, witnessStart]`.
+call. Tag 4 is a square call with the same record shape and the specialized
+square witness block. The tag-3 record is `[3, sourceNode, inputPoint, outputPoint, witnessStart]`.
 Its witness block has length zero. `sourceNodePoints` remains diagnostic;
 only the recorded equations and root equality define the rational polynomial.
-An independent audit checks each alias and operation against the pinned source,
+An independent audit checks each alias and operation against the transformed source,
 including operand order, exact constants, allocation coverage and root wiring.
 
 The compiler still represents every nontrivial output by five coordinates.
@@ -137,7 +147,7 @@ For the forward direction, `8n+3` is positive and is not of the forbidden form
 is nonnegative. No separate oddness tests on x, y, z are required.
 
 The replacement first imposes `member(N)`, then uses three globally typed
-multiplication calls to construct the three squares. Three raw doublings and
+square calls to construct the three squares. Three raw doublings and
 one addition construct `[8]N+[3]P0`; two additions sum the squares. The code
 of `[3]P0` is computed by exact rational field arithmetic. Its four nonintegral
 coordinates use globally conjoined denominator-clearing equations.
@@ -146,13 +156,13 @@ Witness accounting is explicit:
 
 - membership: 7;
 - three roots and three square codes: 30;
-- three multiplication calls: `3*35134`;
+- three specialized square calls: `3*23426`;
 - three doubling outputs: 15;
 - target and partial-sum codes: 10;
 - six addition calls: `6*6`;
 - four fixed rational coordinates: 4.
 
-Their sum is 105,504. In particular the membership check prevents accidentally
+Their sum is 70,380. In particular the membership check prevents accidentally
 allowing a code for a nonintegral eighth-root label or an untyped point.
 
 ## The interpolation guard
@@ -243,7 +253,7 @@ bound as well as degree, with no extra variables. It does not assert that
 each individual coefficient is smaller than a corresponding old coefficient.
 
 For the current prescription, [height-refinements.md](height-refinements.md)
-proves T+1<U=2^32000000 and bounds all the fixed coefficients and occurring
+proves T+1<U=2^20000000 and bounds all the fixed coefficients and occurring
 scalar constructor degrees by U. The guard's degree and log norm therefore
 fit the same constructor majorants U^4 and U^8. The wrapper coordinates also
 satisfy the checked literal bound. `bounds.py` traverses the actual expression
@@ -276,7 +286,7 @@ It also checks off-carrier rational tuples, evaluates selected original
 literal products independently, and checks the degree of each fixture.
 The source arithmetic tests cover both operand orders and alias propagation;
 coordinate perturbations must fail negation. The three-square wrapper is
-evaluated with exact contract oracles for the inherited member/add/multiply
+evaluated with exact contract oracles for the inherited member/add/square
 predicates, including invalid input and fixed-coordinate rejection cases.
 These oracles do not purport to evaluate the astronomical multiplication
 certificate. Negative structural tests corrupt operations, natural guards,
@@ -291,6 +301,11 @@ It also runs the complete catalogue sieve and residue-sum checks in
 `verify-reduction-orders.js`. It rejects altered constants and catalogue/multiplier bindings.
 These are finite checks accompanying `height-refinements.md`; they do not constitute
 machine verification of the geometric, Galois or class-number arguments.
+
+`verify-program-and-square.js` checks the shared-certificate wiring, small
+program fixtures and corrupted simulation certificates. Full-program local
+simulation checking runs during construction, as described in
+[program-and-square.md](program-and-square.md).
 
 `build.js` checks the original expression and precision input hashes, performs
 the optimized translation, and reconstructs the five outer compositions from

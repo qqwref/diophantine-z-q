@@ -84,16 +84,20 @@ The root-level TeX source is the reviewed revision of the 11/5 manuscript; the m
 
 An [optimized construction](construction/optimized/README.md) preserves the dated
 artifacts and provides a separately reproducible specification with
-211,983,774,909 total variables (27.62% fewer). It simplifies constant arithmetic,
-uses three squares for nonnegativity, and replaces the cubic-size finite exclusion
-product with an interpolation guard using the same one witness. The
+151,200,931,889 total variables (48.38% fewer). It simplifies constant arithmetic,
+uses shared square certificates and three squares for nonnegativity, and replaces
+the cubic-size finite exclusion product with an interpolation guard using the same one witness. The
 [current height supplement](construction/optimized/height-refinements.md) uses
 D=144, a [reserve catalogue](construction/optimized/prime-catalogue.md) with
 W=56 and exact maximum H=10321, separate local conductor exponents, and a sharper
 CM and modular-height analysis. Its cutoff satisfies T<2^6450000 and has exactly
 1,940,959 decimal digits, down from about 2.67 trillion in the preceding optimized
 version. No additional variables are introduced. The size checkers separately
-bound the larger fixed scalars by U=2^32000000; they no longer claim B=T+1.
+bound the fixed scalars and constructor degrees by U=2^20000000.
+[Program compaction](construction/optimized/program-and-square.md) reduces
+the largest literal from 3,181,317 to 1,921,733 decimal digits, preserving
+its program's halting set. These refinements remove another 60.8 billion
+variables relative to the preceding optimized version.
 The notes identify the arithmetic inputs, new published class-number input and
 limits of the finite checks. Run
 `python scripts/check_optimized_construction.py --output build/optimized` to

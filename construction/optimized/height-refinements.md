@@ -232,23 +232,26 @@ whose exponent approaches 1/2 as k grows. Since Aheight is exponential in H,
 that would still be exponential in H, while making the local certificate
 more complicated. We have not changed that certificate in this revision.
 
-## 6. Overall size: T no longer bounds every source scalar
+## 6. Overall size: separate bounds for constants and constructors
 
-The old simplification B=T+1 is no longer justified. The pinned precision
-source has a fixed scalar with 3181317 decimal digits, larger than the new T.
-We retain that source and explicitly introduce an **analysis bound**
-`U=2^32000000`; U is not a new coefficient or polynomial constructor.
+The old simplification B=T+1 is no longer used. The pinned precision
+source has a fixed scalar with 3181317 decimal digits. The subsequent
+[program refinement](program-and-square.md) replaces it in the optimized
+build by an equivalent program code with 1921733 digits, while preserving
+the dated source file. That scalar is now below T, but its division
+polynomials and ell still need separate bounds. Use the **analysis bound**
+`U=2^20000000`; U is not a new coefficient or polynomial constructor.
 
 There are 66 primes in P0 and 1080 catalogue primes. Since H<2^14,
 `log2(Ns)<14*(66+1080)=16044`. The unchanged `M<=Ns^10` implies
 `log2(cstar)<160442`. For the index shapes cstar,cstar+1,cstar-1,2*cstar,
 `deg(psi_j)<=128*cstar^3<2^481333<U`.
 Also
-`log2(ell)<4+14*(2916*66+732*1080)=13762228<32000000`.
+`log2(ell)<4+14*(2916*66+732*1080)=13762228<20000000`.
 
 The checkers verify that every extra fixed literal and explicit scalar node
-has fewer than 3190000 decimal digits. Since 10^3<2^10, such an n satisfies
-`log2(128*n^3)<30*ceil(3190000/3)+7=31900027<32000000`.
+has fewer than 1922000 decimal digits. Since 10^1000<2^3322, such an n satisfies
+`log2(128*n^3)<3*3322*1922+7=19154659<20000000`.
 The index-shape check and the original division-polynomial estimate therefore
 bound every such constructor's degree by U as well. Every fixed constant,
 the explicit scalar nodes, and T+1 are also below U, with ample slack for
@@ -259,8 +262,8 @@ column still uses T_dated. It uses T<=U in the interpolation-guard bound and
 degree<=U for the scalar constructors. The resulting upper bounds are
 
 \[
-\deg P\le32768U+8754752<2^{32000016},\qquad
-|[X^\alpha]P|\le2^{U^{2048}}=2^{2^{65536000000}}.
+\deg P\le32768U+8754752<2^{20000016},\qquad
+|[X^\alpha]P|\le2^{U^{2048}}=2^{2^{40960000000}}.
 \]
 
 The latter uses the unchanged syntax-height bound 256, now with B<=U.

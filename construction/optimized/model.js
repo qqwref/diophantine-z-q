@@ -7,12 +7,51 @@ const {EllipticCore} = require("../rational-elliptic-core.js");
 const {indexCode} = require("../rational-field-arithmetic.js");
 const names = prefix => Array.from({length: 5}, (_, i) => `${prefix}.${i}`);
 
+// Specialize A*B=C to A*A=C before allocating existential witnesses.
+// Both copies of A have the same homogeneous coordinates and slope context.
+function addSquare(library) {
+  library.define("square.height_certificate", names("A").concat(names("C"), ["ell"],
+    ...["shift.P", "shift.A", "shift.C"].map(names)), (b, p) => {
+    const roots = [p.slice(0, 5), p.slice(5, 10)], ell = p[10];
+    const context = p.slice(11, 21).concat(p.slice(16, 21), p.slice(21, 26));
+    const f = [], quantities = [];
+    roots.forEach((point, i) => {
+      f.push(b.call("member", point));
+      const a0 = b.fresh(`homogeneous.${i}.a0`), a1 = b.fresh(`homogeneous.${i}.a1`);
+      const den = b.fresh(`homogeneous.${i}.b`);
+      f.push(b.nonzero(den, `homogeneous.${i}.inverse_b`),
+        b.eq(b.mul(den, point[1]), a0), b.eq(b.mul(den, point[2]), a1));
+      quantities.push(a0, a1, den);
+    });
+    quantities.forEach((quantity, i) => {
+      const slopes = Array.from({length: 3}, (_, j) => b.fresh(`slope.${i}.${j}`));
+      f.push(b.eq(b.add(...slopes), quantity));
+      slopes.forEach(t => f.push(b.call("slope", [t, ell, ...context])));
+    });
+    return b.and(...f);
+  }, {meaning: "Eighteen slope certificates for the two distinct roots of a square relation",
+    proof: "optimized/program-and-square.md"});
+  library.define("square", names("A").concat(names("C")), (b, p) => {
+    const e = new EllipticCore(b), A = p.slice(0, 5), C = p.slice(5), f = [];
+    const shifts = [e.P(), A, C].map((point, i) => {
+      const out = e.point(`shift.${i}`);
+      f.push(b.call("multiply.scalar", point.concat(out)));
+      return out;
+    });
+    const ell = b.node("fixed_integer", [["ref", "ell"]]);
+    f.push(b.call("square.height_certificate", p.concat([ell], shifts.flat())),
+      b.call("multiply.guard", A.concat(A, C)));
+    return b.and(...f);
+  }, {meaning: "Exact index squaring, sharing the duplicated input certificate",
+    proof: "optimized/program-and-square.md"});
+}
+
 function addThreeSquareNatural(library) {
   library.define("natural", names("N"), (b, N) => {
     const e = new EllipticCore(b), conditions = [b.call("member", N)];
     const squares = Array.from({length: 3}, (_, i) => {
       const root = e.point(`root.${i}`), square = e.point(`square.${i}`);
-      conditions.push(b.call("multiply", root.concat(root, square)));
+      conditions.push(b.call("square", root.concat(square)));
       return square;
     });
     let eightN = N;
@@ -47,6 +86,7 @@ function buildOptimizedModel({interpolation = true} = {}) {
       cutoff: ["ref", "T"], proof: "optimized/README.md"});
     library.templates[library.id("multiply.guard")] = guard.templates[0];
   }
+  addSquare(library);
   addThreeSquareNatural(library);
   library.define("raw_negate", names("P").concat(names("R")), (b, p) => {
     const e = new EllipticCore(b);
