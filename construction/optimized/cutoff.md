@@ -1,6 +1,11 @@
-# A 144-degree field, a finite catalogue and a smaller cutoff
+# Previous cutoff: the 144-degree field and CM reduction orders
 
-The optimized construction now prescribes
+**Historical supplement:** [height-refinements.md](height-refinements.md)
+supersedes the numerical prescriptions in sections 3, 5 and 6 below. The
+field/Hom arguments in sections 1-2 and prime-support argument in section 4
+are reused. The catalogue now follows [prime-catalogue.md](prime-catalogue.md).
+
+This previous version prescribed
 
 \[
 F=D=144,\quad G_0=480,\quad E_0=866,\quad

@@ -7,6 +7,7 @@ const {addVariableShiftTemplates} = require("../variable-shift-polynomial-librar
 const {buildOptimizedModel} = require("./model.js");
 const {optimizedFixedDefinitions} = require("./constants.js");
 const {Translator, optimizedDefinitions} = require("./translator.js");
+const {optimizedSource} = require("./program-scalar.js");
 const {auditBundle} = require("./audit.js");
 
 function readInputs() {
@@ -21,15 +22,16 @@ function readInputs() {
 
 function build() {
   const {manifest, source, baseline} = readInputs();
+  const optimized = optimizedSource(source);
   const library = buildOptimizedModel(); addVariableShiftTemplates(library);
   const translator = new Translator(library), sourceFile = "precision-natural-polynomial.json";
   const recipes = {};
   recipes.power_value = translator.translate(source.templates[0], {
     name: "power_value", sourceInputCount: 3, naturalInputs: false, outputMode: "value",
     sourceFile: sourceFile + "#templates/0", sourceHash: hash(JSON.stringify(source.templates[0]))});
-  recipes.precision = translator.translate(source, {
-    name: "precision", sourceInputCount: 5, naturalInputs: true, outputMode: "zero", sourceFile,
-    sourceHash: manifest.precision_sha256, powerRecipe: recipes.power_value});
+  recipes.precision = translator.translate(optimized.source, {
+    name: "precision", sourceInputCount: 5, naturalInputs: true, outputMode: "zero", sourceFile: sourceFile + "#optimized-program",
+    sourceHash: optimized.sourceHash, powerRecipe: recipes.power_value});
   for (const name of ["close", "main", "value_union", "value", "integers"]) {
     const old = baseline.recipes[name];
     const recipe = composition(name, old.parameterCount, (fresh, call) => {
@@ -51,10 +53,10 @@ function build() {
     recipe.format = old.format; recipes[name] = recipe;
   }
   const bundle = {...baseline, format: "optimized-ordinary-integer-polynomial-expression-v1",
-    status: "Equivalent construction subject to the same arithmetic inputs as the dated baseline; see optimized/README.md.",
+    status: "Optimized construction under the stated arithmetic inputs and refinements; see optimized/README.md.",
     witnessCount: recipes.integers.witnessCount, definitions: optimizedDefinitions(),
     library: finiteArtifact(library, translator.extraConstants, {meaning: "Three-square natural predicate and interpolation guard"}),
-    recipes, baselinePolynomialSha256: manifest.polynomial_sha256};
+    recipes, sourceProgramOptimization: optimized.report, baselinePolynomialSha256: manifest.polynomial_sha256};
   bundle.library.finitePolynomialConstructors.finite_guard_interpolation = bundle.definitions.finiteGuardInterpolation;
   bundle.library.finitePolynomialConstructors.version = 2;
   bundle.library.fixedConstants = optimizedFixedDefinitions(translator.extraConstants);
@@ -64,10 +66,11 @@ function build() {
     optimizedPolynomialSha256: hash(data), bytes: Buffer.byteLength(data),
     baselineTotalVariables: baseline.witnessCount + 1, totalVariables: bundle.witnessCount + 1,
     variablesRemoved: baseline.witnessCount - bundle.witnessCount,
+    programOptimization: optimized.report,
     templates: Object.fromEntries(library.templates.map(t => [t.name, {witnesses: t.witnessCount, nodes: t.nodes.length}])),
     recipes: Object.fromEntries(Object.entries(recipes).map(([name, r]) => [name, {
       witnesses: r.witnessCount, operations: (r.operations || []).reduce((counts, row) => {
-        const key = ["add", "multiply", "power", "negate"][row[0]];
+        const key = ["add", "multiply", "power", "negate", "square"][row[0]];
         counts[key] = (counts[key] || 0) + 1; return counts;
       }, {})}])), checks, arithmeticTheoremProved: false};
   return {bundle, source, baseline, data, report};

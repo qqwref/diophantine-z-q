@@ -1,114 +1,101 @@
-# A smaller fixed prime catalogue
+# A reserve catalogue with modulus 56
 
-The optimized modulus is
+The current catalogue is the first **45 primes greater than 324** in each
+unit class modulo **W=56=8*7**. It contains 1080 primes and has exact maximum
+**H=10321**. This replaces the preceding 22-per-class catalogue modulo
+185640 (811008 primes, H=23150593).
 
-\[
-\boxed{W=8\cdot3\cdot5\cdot7\cdot13\cdot17=185640.}
-\]
-
-The catalogue still consists of the first 22 primes **greater than 324** in
-every unit class modulo W. Its exact size is `22*phi(W)=811008`, and its
-largest prime is **23150593**, in class 131233. `prime-catalogue.js` verifies
-this by a complete sieve through 25 million and counts every class. It records
-the SHA-256 of the selected primes in increasing order, each encoded as four
-little-endian bytes. Neither a distribution estimate nor a probable-prime
-test is needed. Running the checker takes well under a minute on the tested
-environment; it is included in the optimized construction suite.
-
-The following replaces the *initial progression* in the manuscript's fixed
-twenty-two-prime-pattern proposition. It preserves that proposition's
-conclusion and all subsequent sieves. This is a change to the mathematical
-construction, not a better estimate for the old catalogue.
-
-## Preserve the arithmetic bad-prime set
-
-Keep `P0=product(p<=324)`, `Ns=P0*Hproduct`, and the definitions of M, cstar,
-and ell. Only W is decoupled from P0. The height and normalized-cover arguments
-still exclude every prime through 324. In particular, no good-reduction or
-ramification assertion at the newly omitted modulus primes is being assumed.
-
-Write B={0,-15,-20,-24,-30,-60,1}, u3=Av-u1-u2, and consider the forms
-v and u_j-bv. Fix the real box and signs epsilon_nu as in the manuscript.
-Let S0={2,3,5,7,13,17} be the primes dividing the new modulus.
-
-At q in S0 perform exactly the old q^5-avoidance and q^8-lifting construction.
-Set `d_nu=product(q in S0) q^e(nu,q)`, with 0<=e<=4. These d_nu still divide
-P0^4, so they belong to the original allowed set of small-prime multipliers.
-Choose the desired prime residues 1 modulo 8, 3 modulo 7, and 1 at the other
-odd q in S0. The new catalogue supplies distinct h_nu adjusting the stripped
-unit parts to these residues. As before, 22 primes per class suffice for
-all 22 demands. Put k_nu=d_nu*h_nu.
-
-## Handle the remaining small primes after choosing h_nu
-
-Fix a prime q<=324 outside S0. Every k_nu is a unit modulo q, since h_nu>324.
-We require all F_nu to be nonzero modulo q. At q congruent to 1 modulo 4
-we also require `epsilon_nu F_nu != -k_nu`, equivalently Psi_nu != -1.
-The latter condition is unnecessary at q congruent to 3 modulo 4: an odd
-common divisor of the two conjugate reduction orders would imply that -1
-is a square modulo q, as proved in the original conjugate-orders argument.
-
-For q>=23 choose v avoiding 0 and, when needed, `-epsilon_0*k_0`.
-For each j, at most seven values of u_j make some u_j-bv zero. At most
-seven further values make some `epsilon_(j,b)(u_j-bv)=-k_(j,b)`.
-Thus the allowed set A_j has at least q-14 elements. The Cauchy-Davenport
-inequality, applied twice, gives
+`prime-catalogue.js` verifies every prime and class with an Eratosthenes sieve.
+It also checks the reserve property needed below: for every unit class r
+modulo 56 and every three nonzero residues a mod 5, b mod 13, c mod 17,
+there are **at least 22** catalogue primes h in that class with
 
 \[
-|A_1+A_2+A_3|\ge\min(q,|A_1|+|A_2|+|A_3|-2)
-\ge\min(q,3q-44)=q.
+h\not\equiv a\pmod5,\qquad h\not\equiv b\pmod{13},\qquad
+h\not\equiv c\pmod{17}.
 \]
 
-Consequently u1+u2+u3=Av has a solution in these allowed sets, **for every**
-A, every chosen collection of k_nu, and all the previously fixed signs.
-This quantifier order lets us choose the catalogue primes first.
-For the sumset inequality see, for example,
+There are exactly 24*4*12*16=18432 cases. The minimum is 22; it occurs,
+for example, at r=5 and (a,b,c)=(1,2,14). Thus the proof uses a small
+exhaustively verified finite combinatorial property, not a uniform theorem
+on primes in arbitrary progressions. The ascending uint32-LE catalogue hash
+is recorded in the pinned verification report. No claim that 45 or W=56 is
+optimal is made.
+
+## Initial progression: order of the choices matters
+
+Keep P0=product(p<=324), Ns=P0*Hproduct and the formulas for M, cstar and ell.
+Every prime through 324 is still excluded in the height and ramification
+arguments. Only the catalogue changes.
+
+Write B={0,-15,-20,-24,-30,-60,1} and u1+u2+u3=Av. The 22 forms are v and
+u_j-bv. Fix the real box and its signs epsilon_nu as in the manuscript.
+
+1. At q=2,3,7 use the original avoidance modulo q^5 and lifting modulo q^8.
+   Each form has a fixed valuation e(nu,q) between zero and four. Put
+   d_nu=product(q=2,3,7) q^e(nu,q); this still divides P0^4.
+   Prescribe the eventual prime values to be 1 mod 8 and 3 mod 7.
+   These specify one unit class modulo 56 for each h_nu through
+   h_nu=(epsilon_nu F_nu/d_nu)/c_q modulo 8 or 7.
+   No prescribed prime residue modulo 3 is needed: stripping its valuation
+   already makes Psi_nu=epsilon_nu F_nu/(d_nu h_nu) a unit there, and an odd
+   common divisor of the conjugate orders must be 1 modulo 4.
+
+2. At q=5,11,13,17,19 choose v=1 and slopes u_j outside B modulo q with
+   u1+u2+u3=A. These exist for every A: the checker enumerates the threefold
+   sum of the complement of B and obtains all of F_q for each of these five
+   primes. Thus all 22 forms are nonzero modulo q. Lift modulo q^8.
+
+3. Now choose h_nu in its specified class modulo 56. At q=5,13,17 the
+   condition Psi_nu != -1 is equivalent to avoiding the single nonzero
+   residue h_nu=-epsilon_nu F_nu/d_nu modulo q. The reserve property leaves
+   at least 22 choices for each demand. Greedy selection makes all 22 h_nu
+   distinct: at each step at most 21 previously selected primes are forbidden.
+   This works for arbitrary A, signs, d_nu and the chosen small-prime vectors.
+   Put k_nu=d_nu h_nu. At 11 and 19 no -1 exclusion is needed, since -1 is
+   not a square there and these primes cannot divide the odd part of the
+   conjugate-order gcd.
+
+4. At every remaining prime q<=324, hence q>=23, choose the vector after
+   the h_nu. Avoid v=0 and, if needed, epsilon_0 v=-k_0. Each u_j then has
+   at most 14 forbidden residues: seven zeros and seven values for which
+   epsilon_(j,b)(u_j-bv)=-k_(j,b). The Cauchy-Davenport bound gives
+   |A1+A2+A3|>=min(q,3(q-14)-2)=q. Therefore the required sum Av is attained
+   for every A. Lift this vector modulo q^8.
+
+The sumset theorem is standard; see
 [Tao, *An uncertainty principle for cyclic groups of prime order*](https://arxiv.org/abs/math/0308286).
-
-The only omitted primes below 23 are 11 and 19; both are 3 modulo 4.
-Here only zeros must be avoided. Take v=1. The allowable slopes modulo 11
-are {4,5,8,10}; their threefold sum is all of F_11, as checked exhaustively.
-Modulo 19 there are 12 allowable slopes, so Cauchy-Davenport already gives
-the result; the checker also enumerates all sums. These residues solve
-u1+u2+u3=A for every A. Lift each chosen vector arbitrarily modulo q^8.
+All small residue sets and the entire reserve property are checked exactly.
 
 ## Finish the existing prime-pattern proof
 
-At each selected h_nu>324 use the old independent-plane construction and
-lift modulo h_nu^2. All pairwise minors and the bound 42h<h^2 are unchanged.
-Use CRT with the **same shape** of initial modulus
+At each chosen h_nu>324 impose F_nu=0, avoid the other zero and -k planes,
+and lift modulo h_nu^2 exactly as in the manuscript. Pairwise independence
+and the estimate 42h<h^2 apply unchanged. CRT now uses
 
 \[
 W_0=\prod_{q\le324}q^8\prod_\nu h_\nu^2.
 \]
 
-All Psi_nu are integral affine forms and nonzero modulo every prime
-dividing W0. Their variable coefficients are divisible by every such prime.
-They also differ from -1 at every prime dividing W0 that is 1 modulo 4,
-and at all selected h_nu. At 7 they have the required residue 3.
-We deliberately no longer claim Psi_nu != -1 at 11 and 19; that stronger
-intermediate assertion is not needed.
+All Psi_nu are integral affine forms, nonzero modulo every prime dividing
+W0, with variable coefficients divisible by those primes. They avoid -1
+at every such prime congruent to 1 modulo 4, and at the selected h_nu.
+The residues modulo 8 and 7 still force split primes and opposite twists.
 
-For primes q<=L not dividing W0 retain the original 44-plane exclusion.
-They still all exceed 324, so its positive density bound and dependence
-on L are unchanged. Keep Q*=max(324,H). Both upper sieves still use only
-primes above this fixed Q*. The conjugate-order proof needs exclusion of
-an odd common divisor only at primes q=1 modulo 4; it has exactly that
-exclusion for every q<=L. Thus its gcd=4 conclusion and the argument
-discarding larger common divisors remain valid. The split-prime and opposite
-twist conditions still follow from the unchanged residues modulo 8 and 7.
+Keep Q*=max(324,H). At q<=L not dividing W0 retain the original 44-plane
+exclusion; these primes still exceed 324. The lower prime count, its
+log(L)^(-44) dependence, and both upper sieves are unchanged. The
+conjugate-order argument excludes every possible odd common divisor q<=L:
+only q=1 modulo 4 could occur. Its argument discarding larger common
+factors consequently applies as before.
 
-The construction therefore supplies the same prime pattern using the smaller
-fixed catalogue. Pole clearing and the formal multiplier retain their old
-formulas, evaluated with this new catalogue. Because the original multiplier
-set permits every d dividing P0^4, using only the smaller supported d is
-permitted. All variables and polynomial constructors remain the same.
+Thus the same prime-pattern conclusion holds with the new fixed catalogue.
+The allowed multiplier set still includes every d dividing P0^4, so using
+only d supported on 2,3,7 is permitted. Pole clearing and formal-depth
+arguments keep their original formulas with the new catalogue product.
+No variables or polynomial-constructor operators are added.
 
-## Scope
-
-The residue computations and the entire finite catalogue are checked exactly.
-The application of Cauchy-Davenport and the transfer through the manuscript's
-prime-pattern proof are mathematical arguments, not machine formalizations.
-This supplement and implementation were developed with ChatGPT/Codex at the
-repository owner's request. No optimality of W or independent human review
-is claimed.
+This proof and implementation were developed with ChatGPT/Codex at the
+repository owner's request. Finite certificates do not machine-formalize
+the transfer through the original prime-pattern theorem; the original
+arithmetic inputs remain in force.

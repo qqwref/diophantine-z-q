@@ -2,20 +2,28 @@
 
 const {fixedDefinitions, validateFixedExpression, ref, lit} = require("../finite-polynomial-expressions.js");
 
-const CATALOGUE_MODULUS = 185640n; // 8 * 3 * 5 * 7 * 13 * 17
+const CATALOGUE_MODULUS = 56n; // 8 * 7
+const CATALOGUE_COUNT = 45;
 
 // Keep P0 (all primes <=324), but use the smaller catalogue proved in
 // prime-catalogue.md. The CM reduction orders give prime support <=Hmax.
-// See cutoff.md for the field, height and downstream scalar estimates.
+// See height-refinements.md for the field, height and scalar estimates.
 function optimizedFixedDefinitions(extra = {}) {
   const definitions = fixedDefinitions(extra);
   definitions.W = lit(CATALOGUE_MODULUS);
+  definitions.Hproduct = ["catalogue_product", ref("W"), lit(CATALOGUE_COUNT), lit(324)];
+  definitions.Hmax = ["catalogue_max", ref("W"), lit(CATALOGUE_COUNT), lit(324)];
   definitions.F = lit(144);
   definitions.D = ref("F");
   definitions.G0 = lit(480);
-  definitions.E0 = lit(866);
+  definitions.E0 = lit(24);
   definitions.R = ["max", ref("D"), ref("Hmax")];
-  definitions.Q = ["pow", lit(4), ["mul", ref("R"), ref("E0")]];
+  definitions.Q = ["mul", ["pow", lit(2), lit(24)], ["mul",
+    ["pow", lit(3), lit(11)], ["pow", lit(4), ["mul", lit(2), ref("R")]]]];
+  definitions.Bcm = lit(100000000);
+  definitions.Ccm = lit(210000000);
+  definitions.Aheight = ["mul", ["mul", lit(2), ["pow", lit(10), lit(13)]],
+    ["max", lit(1), ref("Ccm"), ["mul", lit(14000000), ["pow", ref("Q"), lit(12)]]]];
   return definitions;
 }
 
@@ -35,4 +43,4 @@ function auditOptimizedFixedDefinitions(definitions) {
   return known;
 }
 
-module.exports = {CATALOGUE_MODULUS, optimizedFixedDefinitions, auditOptimizedFixedDefinitions};
+module.exports = {CATALOGUE_MODULUS, CATALOGUE_COUNT, optimizedFixedDefinitions, auditOptimizedFixedDefinitions};

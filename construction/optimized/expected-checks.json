@@ -2,11 +2,29 @@
   "build": {
     "passed": true,
     "baselinePolynomialSha256": "4d639d4c44e69ea360d36d4591b8fdc82269d68b9363af0157d1e5c1174c7af6",
-    "optimizedPolynomialSha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
-    "bytes": 22951632,
+    "optimizedPolynomialSha256": "11761e5f9515424edcbe141395a2b55c70eae623ac3f7507ad84171876413861",
+    "bytes": 20903524,
     "baselineTotalVariables": 292890231905,
-    "totalVariables": 211983774909,
-    "variablesRemoved": 80906456996,
+    "totalVariables": 151200931889,
+    "variablesRemoved": 141689300016,
+    "programOptimization": {
+      "originalCodeSha256": "3888e5bfba37abf29ead0f8a63ab51723e2a118eabb0043b638345ae1ec804c6",
+      "optimizedCodeSha256": "07b4a302b64bfbde916dc72b567186b6bd69bea88e79a7069dc5f412038ea094",
+      "originalDecimalDigits": 3181317,
+      "optimizedDecimalDigits": 1921733,
+      "originalBitLength": 10568107,
+      "optimizedBitLength": 6383858,
+      "originalInstructions": 146779,
+      "optimizedInstructions": 93880,
+      "originalWidth": 18,
+      "optimizedWidth": 17,
+      "zeroTestsRemoved": 29312,
+      "cancellingPairsRemoved": 7,
+      "certifiedAlwaysHaltingStates": 23583,
+      "registersAfterRenaming": 23631,
+      "allInputHaltingSimulationChecked": true,
+      "scope": "Local state correspondence for arbitrary natural input in r0 and zero in all other registers; not a test of the precision algorithm itself"
+    },
     "templates": {
       "member": {
         "witnesses": 7,
@@ -56,8 +74,16 @@
         "witnesses": 35134,
         "nodes": 84
       },
+      "square.height_certificate": {
+        "witnesses": 23404,
+        "nodes": 175
+      },
+      "square": {
+        "witnesses": 23426,
+        "nodes": 71
+      },
       "natural": {
-        "witnesses": 105504,
+        "witnesses": 70380,
         "nodes": 127
       },
       "raw_negate": {
@@ -65,7 +91,7 @@
         "nodes": 37
       },
       "value.signed_encode": {
-        "witnesses": 105554,
+        "witnesses": 70430,
         "nodes": 139
       },
       "value.abs": {
@@ -107,40 +133,42 @@
     },
     "recipes": {
       "power_value": {
-        "witnesses": 12870618,
+        "witnesses": 9194306,
         "operations": {
           "add": 200,
-          "multiply": 129,
+          "multiply": 52,
+          "square": 77,
           "negate": 51
         }
       },
       "precision": {
-        "witnesses": 211983211340,
+        "witnesses": 151200543940,
         "operations": {
           "add": 129014,
           "power": 15845,
-          "multiply": 66685,
-          "negate": 26406
+          "multiply": 12633,
+          "negate": 26406,
+          "square": 54052
         }
       },
       "close": {
-        "witnesses": 211983739203,
+        "witnesses": 151200896183,
         "operations": {}
       },
       "main": {
-        "witnesses": 211983774490,
+        "witnesses": 151200931470,
         "operations": {}
       },
       "value_union": {
-        "witnesses": 211983774896,
+        "witnesses": 151200931876,
         "operations": {}
       },
       "value": {
-        "witnesses": 211983774903,
+        "witnesses": 151200931883,
         "operations": {}
       },
       "integers": {
-        "witnesses": 211983774908,
+        "witnesses": 151200931888,
         "operations": {}
       }
     },
@@ -149,7 +177,7 @@
       "evaluations": [
         {
           "name": "power_value",
-          "witnesses": 12870618,
+          "witnesses": 9194306,
           "sourceNodesChecked": 474,
           "operationsChecked": 380,
           "aliasesChecked": 6,
@@ -157,7 +185,7 @@
         },
         {
           "name": "precision",
-          "witnesses": 211983211340,
+          "witnesses": 151200543940,
           "sourceNodesChecked": 293620,
           "operationsChecked": 237950,
           "aliasesChecked": 1604,
@@ -168,44 +196,44 @@
         {
           "name": "close",
           "callsChecked": 7,
-          "witnesses": 211983739203,
+          "witnesses": 151200896183,
           "completeVariableCoverage": true
         },
         {
           "name": "main",
           "callsChecked": 2,
-          "witnesses": 211983774490,
+          "witnesses": 151200931470,
           "completeVariableCoverage": true
         },
         {
           "name": "value_union",
           "callsChecked": 2,
-          "witnesses": 211983774896,
+          "witnesses": 151200931876,
           "completeVariableCoverage": true
         },
         {
           "name": "value",
           "callsChecked": 2,
-          "witnesses": 211983774903,
+          "witnesses": 151200931883,
           "completeVariableCoverage": true
         },
         {
           "name": "integers",
           "callsChecked": 1,
-          "witnesses": 211983774908,
+          "witnesses": 151200931888,
           "completeVariableCoverage": true
         }
       ],
-      "totalVariables": 211983774909,
+      "totalVariables": 151200931889,
       "interpolationConstructors": 1,
       "scope": "Source wiring, optimized operation selection, finite-constructor syntax and witness scopes; arithmetic equivalence is proved in README.md."
     },
     "arithmeticTheoremProved": false
   },
   "bounds": {
-    "candidate_sha256": "d7a5004eaafa558a36c82c348939d9646b74c7d0cc83fee92b2b0a78c28f15b6",
-    "total_variables": 211983774909,
-    "rational_witnesses": 211983774908,
+    "candidate_sha256": "11761e5f9515424edcbe141395a2b55c70eae623ac3f7507ad84171876413861",
+    "total_variables": 151200931889,
+    "rational_witnesses": 151200931888,
     "templates": [
       {
         "name": "member",
@@ -268,8 +296,18 @@
         "nodes": 84
       },
       {
+        "name": "square.height_certificate",
+        "height": 195,
+        "nodes": 175
+      },
+      {
+        "name": "square",
+        "height": 202,
+        "nodes": 71
+      },
+      {
         "name": "natural",
-        "height": 227,
+        "height": 215,
         "nodes": 127
       },
       {
@@ -279,7 +317,7 @@
       },
       {
         "name": "value.signed_encode",
-        "height": 234,
+        "height": 222,
         "nodes": 139
       },
       {
@@ -330,15 +368,15 @@
     ],
     "recipes": {
       "power_value": {
-        "height": 232,
+        "height": 220,
         "constraint_count": 470
       },
       "precision": {
-        "height": 237,
+        "height": 225,
         "constraint_count": 292018
       },
       "close": {
-        "height": 239,
+        "height": 227,
         "constraint_count": 7
       },
       "main": {
@@ -358,21 +396,24 @@
         "constraint_count": 1
       }
     },
-    "explicit_constant_nodes": 185,
-    "finite_constructor_nodes": 50,
+    "explicit_constant_nodes": 199,
+    "finite_constructor_nodes": 51,
     "root_height_bound": 256,
     "degree_bound": "B^2048",
     "largest_absolute_coefficient_bound": "2^(B^2048)",
     "B": "max(2^20, T+1, 1+abs(c) for every fixedConstant value, every explicit scalar constant node, and every evaluated fixed_integer or psi index expression)",
-    "simplified_B": "T_optimized+1, by cutoff.md, the companion proof and the literal digit checks",
-    "max_fixed_literal_decimal_digits": 3181317,
+    "simplified_B": "U=2^20000000 bounds B, by height-refinements.md and the literal digit checks",
+    "max_fixed_literal_decimal_digits": 1921733,
+    "uniform_log2_B_upper_bound": 20000000,
+    "absolute_degree_bound": "2^20000016 (using the separate degree traversal)",
+    "absolute_coefficient_bound": "2^(2^40960000000)",
     "guard_degree_bound": "12*T+3 before the surrounding conjunction square",
     "guard_log2_l1_bound": "2^39*(T+1)^5",
-    "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Inherits baseline arithmetic assumptions."
+    "scope": "Syntactic bounds for optimized construction; README.md proves the replacement guard majorants. Uses baseline arithmetic assumptions and documented height refinements."
   },
   "degrees": {
-    "coefficient_order": "constant, T, T^2, ...",
-    "domain": "Each column uses its own prescribed cutoff: T_dated or T_optimized (both >=1)",
+    "coefficient_order": "constant, X, X^2, ...",
+    "domain": "Baseline X=T_dated; optimized X=U=2^20000000, which bounds T_optimized and all scalar constructor degrees",
     "baseline": {
       "root": [
         8754752,
@@ -562,6 +603,13 @@
           34048,
           128
         ],
+        "square.height_certificate": [
+          8512
+        ],
+        "square": [
+          34048,
+          128
+        ],
         "natural": [
           136192,
           512
@@ -638,10 +686,21 @@
         ]
       }
     },
-    "premise": "The manuscript's fixed-index estimates, cutoff.md for the smaller optimized cutoff, verified constructor shapes, and degree substitution inequality; see README.md."
+    "premise": "The manuscript's fixed-index estimates, height-refinements.md for optimized T and the separate scalar bound U, verified constructor shapes, and degree substitution inequality; see README.md."
   },
   "verification": {
     "passed": true,
+    "programFixtures": {
+      "programs": 7,
+      "finiteInputComparisons": 91,
+      "mutationsRejected": 3
+    },
+    "squareStructure": {
+      "heightConjunctsAfterSharing": 32,
+      "outerConjunctsAfterSharing": 8,
+      "witnessesSavedPerSquare": 11708,
+      "scope": "Exact conjunction wiring after identifying duplicate existential certificates; callee contracts are retained"
+    },
     "guards": {
       "cases": 495,
       "originalComparisons": 12,
@@ -667,7 +726,7 @@
     "arithmetic": {
       "cases": 945,
       "negateRejections": 25,
-      "mutationsRejected": 5
+      "mutationsRejected": 6
     },
     "natural": {
       "integerCases": 1101,
@@ -724,21 +783,60 @@
       "splittingFieldBound": 144,
       "homFieldBound": 144,
       "fiveTorsionExtensionBound": 480,
-      "absoluteUpperBreakBound": 432,
-      "conductorExponentBound": 866,
+      "upperBreakBounds": {
+        "KAtTwo": 8,
+        "fiveTorsionAtThree": 4.5,
+        "betaAtTwo": 11
+      },
+      "conductorExponentBounds": {
+        "two": 24,
+        "three": 11,
+        "other": 2
+      },
+      "cm": {
+        "classNumberBound": 72,
+        "fundamentalDiscriminantBound": 3000000,
+        "orderConductorBound": 93312,
+        "ellipticHeightBound": 100000000,
+        "surfaceHeightBound": 210000000
+      },
       "catalogue": {
-        "modulus": 185640,
-        "unitClasses": 36864,
-        "primesPerClass": 22,
+        "modulus": 56,
+        "unitClasses": 24,
+        "primesPerClass": 45,
         "floor": 324,
-        "size": 811008,
-        "maximum": 23150593,
-        "lastResidue": 131233,
-        "sha256AscendingUint32LE": "70dc6d12c8ddbed7a5fa1f8f00ce2a6df2b781fe2888a95306e7141ae72b4d4b",
-        "verification": "Complete Eratosthenes sieve and first-22 count in every unit class"
+        "size": 1080,
+        "maximum": 10321,
+        "lastResidue": 17,
+        "reservePrimes": [
+          5,
+          13,
+          17
+        ],
+        "reserveMinimum": 22,
+        "reserveCases": 18432,
+        "worstCase": {
+          "residue": 5,
+          "excluded": [
+            1,
+            2,
+            14
+          ]
+        },
+        "sha256AscendingUint32LE": "7ae699e02f108589a12ceab58a0c579ca1170e10a024921d51a32ff0bccdb81d",
+        "verification": "Complete Eratosthenes sieve and first-45 count in every unit class"
       },
       "residues": {
         "exceptions": [
+          {
+            "prime": 5,
+            "allowedSlopes": [
+              2,
+              3,
+              4
+            ],
+            "tripleSumSize": 5
+          },
           {
             "prime": 11,
             "allowedSlopes": [
@@ -748,6 +846,34 @@
               10
             ],
             "tripleSumSize": 11
+          },
+          {
+            "prime": 13,
+            "allowedSlopes": [
+              3,
+              4,
+              7,
+              8,
+              10,
+              12
+            ],
+            "tripleSumSize": 13
+          },
+          {
+            "prime": 17,
+            "allowedSlopes": [
+              3,
+              5,
+              6,
+              7,
+              9,
+              11,
+              12,
+              13,
+              15,
+              16
+            ],
+            "tripleSumSize": 17
           },
           {
             "prime": 19,
@@ -770,13 +896,14 @@
         ],
         "cauchyDavenportThreshold": 23,
         "forbiddenPerSlope": 14,
-        "retainedPrimes": [
+        "valuationPrimes": [
           2,
           3,
-          5,
-          7,
-          13,
-          17
+          7
+        ],
+        "prescribedResiduePrimes": [
+          2,
+          7
         ]
       },
       "reductionOrders": {
@@ -1001,14 +1128,18 @@
         "scope": "Exact point counts through p=101; the general CM proof is in cutoff.md"
       },
       "primeSupportBound": "Hmax",
-      "heightBase": "4^(866*Hmax)",
+      "heightBase": "2^24 * 3^11 * 4^(2*Hmax)",
+      "nonCmHeightBound": "14000000 * Q^12 * M^24",
       "cutoff": {
-        "formula": "(96*10^13)^13 * 2^8861398783796",
-        "upperBound": "2^(2^44)",
-        "previousUpperBound": "2^(2^(2^242))"
+        "formula": "(1344*10^19)^13 * 2^6444048 * 3^1716",
+        "upperBound": "2^6450000",
+        "bits": 6447724,
+        "decimalDigits": 1940959,
+        "previousUpperBound": "2^(2^44)"
       },
-      "constantMutationsRejected": 16,
-      "scope": "Exact finite consequences of cutoff.md; geometric, formal-group and prime-pattern arguments are not machine formalized"
+      "uniformAnalysisBound": "U=2^20000000; not T+1",
+      "constantMutationsRejected": 22,
+      "scope": "Exact finite consequences of height-refinements.md; geometric, formal-group and prime-pattern arguments are not machine formalized"
     },
     "scope": "Finite exact checks and structural negative tests; not a proof of the inherited arithmetic inputs"
   }

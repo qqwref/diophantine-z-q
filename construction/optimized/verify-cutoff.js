@@ -7,7 +7,7 @@ const {verifyCatalogue, verifyResidueExceptions} = require("./prime-catalogue.js
 const {verifyReductionOrders} = require("./verify-reduction-orders.js");
 const {P, pointMul, localDepthCondition} = require("../rational-field-arithmetic.js");
 const {fixedDefinitions, evaluateFixed} = require("../finite-polynomial-expressions.js");
-const {CATALOGUE_MODULUS: W, optimizedFixedDefinitions, auditOptimizedFixedDefinitions} = require("./constants.js");
+const {CATALOGUE_MODULUS: W, CATALOGUE_COUNT, optimizedFixedDefinitions, auditOptimizedFixedDefinitions} = require("./constants.js");
 
 function permutations(n) {
   const result = [];
@@ -36,6 +36,7 @@ function verifyCentralizers() {
     assert.equal(centralizer.length, expected);
     assert.equal(new Set(centralizer.map(c => c[0])).size, centralizer.length);
     assert(centralizer.length <= n);
+    assert.equal(n % centralizer.length, 0);
     return {name, points: n, centralizerOrder: centralizer.length};
   });
 }
@@ -69,45 +70,77 @@ function verifyCutoff() {
     for (let c = 0; c < 5; c++) for (let d = 0; d < 5; d++)
       if ((a*d-b*c) % 5 !== 0) gl2++;
   assert.equal(gl2, (25-1)*(25-5)); assert.equal(gl2, 480);
-  const D = 144n, G0 = BigInt(gl2), U0 = 3n*D, E0 = 2n+2n*U0;
-  assert(D < 2n**8n && D*G0 < 2n**17n);
-  assert(2n*(1n+17n) <= U0 && 2n*(1n+8n) <= U0);
-  assert.equal(U0, 432n); assert.equal(E0, 866n);
+  const D = 144n, G0 = BigInt(gl2), E0 = 24n;
+  assert.equal(D, 2n**4n * 3n**2n);
+  assert.equal(D*G0, 2n**9n * 3n**3n * 5n);
+  const breaks = {KAtTwo: 8, fiveTorsionAtThree: 4.5, betaAtTwo: 11};
+  assert.equal(2*4, breaks.KAtTwo);
+  assert.equal(3*3/2, breaks.fiveTorsionAtThree);
+  assert.equal(breaks.KAtTwo+3, breaks.betaAtTwo);
+  assert.equal(2+2*breaks.betaAtTwo, Number(E0));
+  assert.equal(2+2*breaks.fiveTorsionAtThree, 11);
   const catalogue = verifyCatalogue(), residues = verifyResidueExceptions();
   const H = BigInt(catalogue.maximum), N = BigInt(catalogue.size);
+  assert.equal(CATALOGUE_COUNT, 45); assert.equal(N, 1080n);
   assert(2n**434n < oldW && oldW < 2n**435n);
   assert.equal(primesThrough(324).length, 66);
-  assert(P0 < H**66n && N+66n < 22n*W);
-  assert(H > 22n*W && H > D && H < 2n**25n);
-  assert(4n*D < 4n**5n && 5n+H <= E0*H); // degree bound with Q=4^(R E0)
-  assert(2n*E0*H > 40n && 2n**40n > 10n**12n); // Q>10^12
-  assert(50000n*D**2n < 34n*E0*H); // Q^17 dominates Ccm
-  const powerOfTwo = 442n*E0*H;
-  assert.equal(powerOfTwo, 8861398783796n);
-  assert((96n*10n**13n)**13n < 2n**1024n);
-  assert(powerOfTwo+1024n < 2n**44n); // log2(T)<2^44
-  assert(1n+220n*W < 230n*W);
-  assert(1n+2916n*66n+732n*N < 17000n*W);
-  assert(25n*17000n*W < powerOfTwo); // ell<T
-  assert(25n*(690n*W+1n) < powerOfTwo); // division polynomials for cstar
-  assert(60000007n < powerOfTwo); // all extra literal indices
+  assert(P0 < H**66n && H > 324n && H > D && H < 2n**14n);
+  assert(4n*D < 2n**24n);
+  assert(4n*H > 20n); // Q>2^20, without a floor on R
+
+  // The CM class number is <=D/2, inside Watkins's classification.
+  // The theorem's fundamental-discriminant bound is an external input.
+  assert.equal(D/2n, 72n);
+  const conductorBound = 2n*(3n*72n)**2n;
+  assert.equal(conductorBound, 93312n);
+  assert(3000000n < 2000n**2n);
+  assert(conductorBound*2000n < 3n*(100000000n-1n));
+  assert(8n**20n > 200000000n*3n**20n); // e>8/3 => log(2Bcm)<20
+  assert(200000000n+4096n*(1024n+144n+40n) < 210000000n);
+  assert.equal(1024n*64n*6n, 393216n);
+  assert.equal(1024n*(2n+2n*35n), 73728n);
+  assert.equal(393216n+73728n, 466944n);
+  assert(466944n < 2n**20n);
+
+  const uniformBits = 20000000n;
+  assert.equal(14n*(66n+N), 16044n);
+  assert(7n+3n*(2n+10n*16044n) < uniformBits);
+  assert(4n+14n*(2916n*66n+732n*N) < uniformBits); // ell, not necessarily <T
+  assert(10n**1000n < 2n**3322n);
+  assert(3n*3322n*((1922000n+999n)/1000n)+7n < uniformBits); // scalar constructor degrees
+  assert(1344n*10n**19n < 2n**74n);
+  assert.equal(156n*(24n+4n*H), 6444048n);
+  assert.equal(156n*11n, 1716n);
+  assert(13n*74n+6444048n+2n*1716n < 6450000n);
+  assert(6450000n < uniformBits);
 
   const definitions = optimizedFixedDefinitions(), baseline = fixedDefinitions();
   auditOptimizedFixedDefinitions(definitions);
-  for (const [name, expected] of Object.entries({F: D, D, G0, E0}))
+  for (const [name, expected] of Object.entries({W, F: D, D, G0, E0, Bcm: 100000000n, Ccm: 210000000n}))
     assert.equal(evaluateFixed(definitions[name], definitions), expected);
+  const Q = evaluateFixed(definitions.Q, definitions, {Hmax: H});
+  assert.equal(Q, 2n**24n * 3n**11n * 4n**(2n*H));
+  assert(14000000n*Q**12n > 210000000n);
+  const T = evaluateFixed(definitions.T, definitions, {Hmax: H});
+  assert.equal(T, ((1344n*10n**19n)**13n * 3n**1716n) << 6444048n);
+  const cutoffBits = T.toString(2).length;
+  assert.equal(cutoffBits, 6447724);
+  const lowerDecimal = 10n**1940958n;
+  assert(lowerDecimal <= T && T < 10n*lowerDecimal);
   for (const h of [1n, 10000n, 1000000n]) {
     const expected = h > D ? h : D;
     assert.equal(evaluateFixed(definitions.R, definitions, {Hmax: h}), expected);
   }
   for (const name of Object.keys(baseline))
-    if (!["W", "F", "D", "G0", "E0", "R", "Q"].includes(name)) assert.deepEqual(definitions[name], baseline[name]);
+    if (!["W", "Hproduct", "Hmax", "F", "D", "G0", "E0", "R", "Q", "Bcm", "Ccm", "Aheight"].includes(name)) assert.deepEqual(definitions[name], baseline[name]);
   let rejected = 0;
   for (const [name, bad] of [
     ["F", baseline.F], ["F", ["factorial", ["literal", "144"]]],
     ["D", baseline.D], ["D", ["literal", "1"]],
-    ["G0", ["literal", "479"]], ["E0", ["literal", "865"]],
+    ["G0", ["literal", "479"]], ["E0", ["literal", "23"]], ["E0", ["literal", "866"]],
     ["W", baseline.W], ["W", ["literal", "1"]], ["Q", baseline.Q],
+    ["Hproduct", baseline.Hproduct], ["Hmax", baseline.Hmax],
+    ["Bcm", baseline.Bcm], ["Ccm", baseline.Ccm], ["Aheight", baseline.Aheight],
     ["T", ["literal", "1"]], ["R", ["ref", "D"]], ["R", baseline.R],
     ["R", ["max", ["ref", "D"], ["pow", ["ref", "Hmax"], ["literal", "3"]], ["pow", ["literal", "10"], ["literal", "12"]]]],
     ["Hmax", ["literal", "1"]], ["cstar", ["literal", "1"]]]) {
@@ -117,13 +150,17 @@ function verifyCutoff() {
   return {level, branchQuadraticDiscriminants: discriminants,
     centralizers: verifyCentralizers(), formalDepth: verifyFormalDepth(),
     splittingFieldBound: 144, homFieldBound: 144, fiveTorsionExtensionBound: gl2,
-    absoluteUpperBreakBound: Number(U0), conductorExponentBound: Number(E0),
+    upperBreakBounds: breaks, conductorExponentBounds: {two: 24, three: 11, other: 2},
+    cm: {classNumberBound: 72, fundamentalDiscriminantBound: 3000000,
+      orderConductorBound: 93312, ellipticHeightBound: 100000000, surfaceHeightBound: 210000000},
     catalogue, residues, reductionOrders: verifyReductionOrders(),
-    primeSupportBound: "Hmax", heightBase: "4^(866*Hmax)",
-    cutoff: {formula: "(96*10^13)^13 * 2^8861398783796", upperBound: "2^(2^44)",
-      previousUpperBound: "2^(2^(2^242))"},
+    primeSupportBound: "Hmax", heightBase: "2^24 * 3^11 * 4^(2*Hmax)",
+    nonCmHeightBound: "14000000 * Q^12 * M^24",
+    cutoff: {formula: "(1344*10^19)^13 * 2^6444048 * 3^1716", upperBound: "2^6450000",
+      bits: cutoffBits, decimalDigits: 1940959, previousUpperBound: "2^(2^44)"},
+    uniformAnalysisBound: "U=2^20000000; not T+1",
     constantMutationsRejected: rejected,
-    scope: "Exact finite consequences of cutoff.md; geometric, formal-group and prime-pattern arguments are not machine formalized"};
+    scope: "Exact finite consequences of height-refinements.md; geometric, formal-group and prime-pattern arguments are not machine formalized"};
 }
 module.exports = {verifyCutoff};
 if (require.main === module) console.log(JSON.stringify(verifyCutoff(), null, 2));
